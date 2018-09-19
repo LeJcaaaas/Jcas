@@ -30,39 +30,114 @@ public class Generator {
 	private ArrayList<String> varUsed = new ArrayList<String>();
 	private ArrayList<String> typeVar = new ArrayList<String>();
 	
+	private static boolean typeProg;
+	private static int nbProg;
+	
+	
 	public static void main(String[] args) throws IOException {
 		Generator lejcas = new Generator();
 		
 		System.out.println(" Bienvenue sur le générateur de code JCas");
 		@SuppressWarnings("resource")
+		
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Veuillez saisir le nom du fichier de sortie sans l'extension: ");
+		System.out.println("Combien de fichiers de tests voulez vous?");
 		String str = sc.nextLine();
-		str = str.concat(".cas");
-		File fichier = new File(str);
+		nbProg = Integer.valueOf(str);
+		System.out.println("Voulez-vous un programme faux ou juste?");
+		String res = sc.nextLine();
+	
+		if (res.equals("juste")) {
+			typeProg = true;
+		}
+		else {
+			typeProg = false;
+			System.out.println("Programme faux");
+		}
 		
-		String prog = lejcas.Generate();
-		byte[] buf = prog.getBytes();
-		FileOutputStream out = new FileOutputStream(fichier);
-		out.write(buf);
-		System.out.println("Ecriture réussie"); 
-		out.close();
-		
-		System.out.println(prog);
+		lejcas.Generate();
 		
 	}
 	
-	public String Generate() {
+	public void Generate() throws IOException {
 		String progfinal = program;
+		String nomProg = "a.cas"; // Si erreur
+		int i=0;
 		
-		progfinal = progfinal.concat(varBeautify(indiceGenerator("variable")));
-		progfinal = progfinal.concat(bodyGenerator());
-		//System.out.println(progfinal);
-		
-		return progfinal;
-		
+		if( typeProg == true) {
+			
+			while( i < nbProg) {
+			
+				progfinal = progfinal.concat(varBeautify(indiceGenerator("variable")));
+				progfinal = progfinal.concat(bodyGenerator());
+				nomProg = stringGenerator(20);
+				File fichier = new File(nomProg);
+
+				byte[] buf = progfinal.getBytes();
+				FileOutputStream out = new FileOutputStream(fichier);
+				out.write(buf);
+				System.out.println("Ecriture réussie"); 
+				out.close();
+				i = i+1;
+				progfinal = program;
+			}
+			
+		}else {
+			
+			while( i < nbProg) {
+				
+				String var = varBeautify(1);
+				String body = bodyGenerator();
+				String str = stringGenerator(1);
+				String comment = "-".concat(commentGenerator());
+				String texte;
+				ArrayList<String> faux = new ArrayList<String>();
+				faux.add(var);
+				faux.add(body);
+				faux.add(str);
+				faux.add(comment);
+				
+				texte = faux.get((int)Math.random()*4);
+				
+				progfinal = progfinal.concat(varBeautify(indiceGenerator("variable")));
+				progfinal = progfinal.concat(bodyGenerator());
+				int j = (int)( Math.random()*progfinal.length());
+				
+				progfinal = progfinal.substring(0,j) + texte + progfinal.substring(j);
+				nomProg = stringGenerator(20);
+				File fichier = new File(nomProg);
+
+				byte[] buf = progfinal.getBytes();
+				FileOutputStream out = new FileOutputStream(fichier);
+				out.write(buf);
+				System.out.println(progfinal);
+				System.out.println("Ecriture réussie"); 
+				out.close();
+				i = i+1;
+				progfinal = program;
+			}
+	
+		}
 	}
 	
+	public String stringGenerator(int n) {
+		
+		StringBuilder sb = new StringBuilder();
+		StringBuilder res = new StringBuilder();
+		
+		sb.append("abcdefghijklmnopqrstuvwxyz");
+		
+		for(int i=0; i<n; i++) {
+			
+			int j = (int)(Math.random()*n);
+			res.append(sb.charAt(j));
+			
+		}
+		res.append(".cas");
+		return res.toString();
+		
+		
+	}
 	public ArrayList<String> wordGenerator(){
 		ArrayList<String> mot_cle = new ArrayList<String>();
 		mot_cle.add("write");
