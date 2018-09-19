@@ -21,7 +21,6 @@ import java.util.Scanner;
 
 public class Generator {
 
-	private final String affec = ":=";
 	private final String eol = " ;";
 	private final String tab = "\t";
 	private String program = "program\n";
@@ -35,17 +34,21 @@ public class Generator {
 		Generator lejcas = new Generator();
 		
 		System.out.println(" Bienvenue sur le générateur de code JCas");
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Veuillez saisir le nom du fichier de sortie sans l'extension: ");
 		String str = sc.nextLine();
-		str = str.concat(".jcas");
+		str = str.concat(".cas");
 		File fichier = new File(str);
+		
 		String prog = lejcas.Generate();
 		byte[] buf = prog.getBytes();
 		FileOutputStream out = new FileOutputStream(fichier);
 		out.write(buf);
-		System.out.println("Ecriture réussie");
+		System.out.println("Ecriture réussie"); 
 		out.close();
+		
+		System.out.println(prog);
 		
 	}
 	
@@ -104,6 +107,19 @@ public class Generator {
 		mot_cle.add("j");
 		return mot_cle;
 	}
+	
+	public String compareGenerator(){
+		ArrayList<String> compare = new ArrayList<String>();
+		String op;
+		
+		compare.add("<=");
+		compare.add(">=");
+		compare.add("==");
+		
+		op = compare.get( (int) (Math.random()*3));
+		return op;
+	}
+	
 	
 	public int indiceGenerator(String array) {
 		int max = 0;
@@ -266,12 +282,12 @@ public class Generator {
 						}
 						text = text.concat(varUsed.get(j));
 						var1 = varUsed.get(j);
-						text = text.concat(" <= ");
+						text = text.concat(compareGenerator());
 						i = 2;
 					}
 					else {
 						text = text.concat(varUsed.get(0)); // Présence d'une seule variable 
-						text = text.concat(" <= ").concat(String.valueOf((int)(Math.random()*1500))).concat(")").concat("\n");
+						text = text.concat(compareGenerator()).concat(String.valueOf((int)(Math.random()*1500))).concat(")").concat("\n");
 					}
 					
 				}
@@ -327,7 +343,7 @@ public class Generator {
 							break; //Permet de réaliser une fois le var <= var2
 						}
 						var1 = varUsed.get(j);
-						text = text.concat(" <= ");
+						text = text.concat(compareGenerator());
 					}
 				}
 			}
