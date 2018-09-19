@@ -319,13 +319,10 @@ COMMENTAIRE	= "--"{CAR_COMMENT}*
 
 // -- Exception par defaut, lexeme introuvable
 
-.{
+.
+{
 	System.out.println("Erreur Lexicale : '" +
 		yytext() + "' non reconnu ... ligne " + numLigne());
 
 	throw new ErreurLexicale();
 }
-
-// ------------
-// A COMPLETER
-// ------------
