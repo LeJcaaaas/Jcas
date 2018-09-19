@@ -17,7 +17,7 @@ import java.util.Scanner;
  * 
  * String commentGenerator() renvoit un commentaire ou saut de ligne.
  */
-
+	
 
 public class Generator {
 

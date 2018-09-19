@@ -1,0 +1,11 @@
+program
+	a : 1 .. 20 ;
+
+begin 
+
+	-- Hello I am a comment
+	while(a<=145)
+		a := 20 ;
+	end ;
+	new_line ;
+end.

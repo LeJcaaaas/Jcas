@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doc_lexical.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="documentation-passe-1-groupe-n-bellanger-jarry-sauger-thomas">Documentation Passe 1 groupe n: Bellanger-Jarry-Sauger-Thomas</h1>
+<h2 id="opérateurs-">Opérateurs :</h2>
+<p>Pour chaque opérateur défini dans le langage Jcas par la chaîne correspondante,<br>
+on renvoie le lexeme correspondant, qui existe déjà dans la table des symboles.</p>
+<h4 id="exemple-de-code-">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token string">"&lt;="</span> <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>sym<span class="token punctuation">.</span>INF_EGAL<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+</code></pre>
+<h2 id="lexèmes-spécifiques">Lexèmes Spécifiques</h2>
+<p>Pour les lexèmes IDF, constante entiere, constante reelle, constante chaine<br>
+et commentaire, on doit effectuer une action plus spécifique.</p>
+<h4 id="exemple-de-code--1">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token punctuation">{</span>IDF<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>dictionnaire<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">!=</span>null<span class="token punctuation">)</span>
+	  <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>dictionnaire<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+
+	<span class="token keyword">else</span> <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>sym<span class="token punctuation">.</span>IDF<span class="token punctuation">,</span> <span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="idf">IDF</h3>
+<p>Pour IDF, qui correspond a un identificateur, on regarde s’il existe une<br>
+entrée correspondante dans le dictionnaire qui implémente la table des symboles.<br>
+Si oui on renvoie les informations contenues dans la table des symboles,<br>
+si non l’on ajoute a la table des symboles.</p>
+<h3 id="const_ent">CONST_ENT</h3>
+<p>Pour une constante entière, on vérifie le format du lexème, s’il s’agit bien<br>
+d’un entier on renvoie sa valeur, sinon on remonte une erreur lexicale.</p>
+<h3 id="const_reel">CONST_REEL</h3>
+<p>Pour une constante réelle, on verifie le format du lexème, s’il s’agit bien<br>
+d’un entier on renvoie sa valeur, sinon on remonte une erreur lexicale.</p>
+<h3 id="const_chaine">CONST_CHAINE</h3>
+<p>Pour une constante chaine, on renvoie directement le contenu du lexeme.</p>
+<h3 id="commentaire">COMMENTAIRE</h3>
+<p>Dans le cas d’un commentaire, l’action consiste a ne rien faire.</p>
+<h3 id="cas-derreur">Cas d’erreur</h3>
+<p>Le dernier cas correspond au cas ou le lexème n’a pas été reconnu, dans ce<br>
+cas on renvoie une erreur lexicale.</p>
+<h4 id="exemple-de-code--2">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token punctuation">.</span><span class="token punctuation">{</span>
+	System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Erreur Lexicale : '"</span> <span class="token operator">+</span>
+		<span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"' non reconnu ... ligne "</span> <span class="token operator">+</span> <span class="token function">numLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ErreurLexicale</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+</body>
+
+</html>
