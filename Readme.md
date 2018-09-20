@@ -14,20 +14,28 @@ Le compilateur quant à lui est composé d'une série de classes Java, interagis
 
 Pour créer de nouveaux fichiers de test (si besoin) :
 
-``` java -jar jcasGenerator/jcasGenerator.final.jar ```
+```Bash
+java -jar jcasGenerator/jcasGenerator.final.jar
+```
 
 Pour compiler le programme de compilation jcas :
 
-```
+```Bash
 chmod -R u+x ProjetCompil/
+
 cd ProjetCompil/src/fr/esisar/compilation/syntaxe/
+
 ./compil.sh
 ```
 
 Pour lancer les analyses lexicales et syntaxiques sur les programmes de test :
 
-> cd ProjetCompil/test/lexico/
-> ./lexico.sh
+```Bash
+cd ProjetCompil/test/lexico/
 
-> cd ProjetCompil/test/syntaxe/
-> ./syntaxe.sh
+./lexico.sh
+
+cd ProjetCompil/test/syntaxe/
+
+./syntaxe.sh
+```
