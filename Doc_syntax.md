@@ -2,9 +2,7 @@
 
 ## Regles de construction de l'arbre d'analyse
 
-On définit chaque non terminal de la grammaire à partir des lexèmes et des
-non terminaux qui le composent. Une fois la définition établie on donne
-le noeud à créer lorsque l'on rencontre ce non terminal
+On définit chaque non terminal de la grammaire ainsi que les règles de dérivation. A partir de ces règles de dérivation on construit l'arbre d'analyse.
 
 ### Exemple de code :
 #### definition du non terminal
