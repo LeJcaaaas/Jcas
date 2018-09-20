@@ -352,7 +352,7 @@ public class Generator {
 						if( i == 2) {
 							var2 = varUsed.get(j);
 					//		System.out.println("text ! " + text);
-							text = text.concat(var2).concat(")").concat("\n");
+							text = text.concat(var2).concat(")").concat(tab).concat("do").concat("\n");
 							break; //Permet de réaliser une fois le var <= var2
 						}
 						text = text.concat(varUsed.get(j));
@@ -362,7 +362,7 @@ public class Generator {
 					}
 					else {
 						text = text.concat(varUsed.get(0)); // Présence d'une seule variable 
-						text = text.concat(compareGenerator()).concat(String.valueOf((int)(Math.random()*1500))).concat(")").concat("\n");
+						text = text.concat(compareGenerator()).concat(String.valueOf((int)(Math.random()*1500))).concat(")").concat(tab).concat("do").concat("\n");
 					}
 					
 				}
@@ -371,7 +371,7 @@ public class Generator {
 			else { // cas boolean (var)
 				var1 = varUsed.get(i);
 				//System.out.println("L282 i != -1");
-				text = tab.concat(mot).concat("(").concat(var1).concat(")").concat("\n");
+				text = tab.concat(mot).concat("(").concat(var1).concat(")").concat(tab).concat("do").concat("\n");
 				
 			}
 			//Génération du body
