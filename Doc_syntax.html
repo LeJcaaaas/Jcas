@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doc_syntax.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="documentation-passe-1-groupe-n--bellanger-jarry-sauger-thomas">Documentation Passe 1 groupe n : Bellanger-Jarry-Sauger-Thomas</h1>
+<h2 id="regles-de-construction-de-larbre-danalyse">Regles de construction de l’arbre d’analyse</h2>
+<p>On définit chaque non terminal de la grammaire ainsi que les règles de dérivation. A partir de ces règles de dérivation on construit l’arbre d’analyse.</p>
+<h3 id="exemple-de-code-">Exemple de code :</h3>
+<h4 id="definition-du-non-terminal">definition du non terminal</h4>
+<pre class=" language-java"><code class="prism  language-java">liste_idf <span class="token operator">:</span><span class="token operator">:</span><span class="token operator">=</span> liste_idf<span class="token operator">:</span>a VIRGULE idf<span class="token operator">:</span>b <span class="token punctuation">{</span><span class="token operator">:</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">:</span><span class="token punctuation">}</span> <span class="token operator">|</span>  idf<span class="token operator">:</span>b <span class="token punctuation">{</span><span class="token operator">:</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">:</span><span class="token punctuation">}</span>
+</code></pre>
+<h4 id="création-du-noeud-dans-larbre">création du noeud dans l’arbre</h4>
+<pre class=" language-java"><code class="prism  language-java">liste_idf<span class="token operator">:</span>a VIRGULE idf<span class="token operator">:</span>b
+   <span class="token punctuation">{</span><span class="token operator">:</span>
+      RESULT <span class="token operator">=</span> Arbre<span class="token punctuation">.</span><span class="token function">creation2</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>ListeIdent<span class="token punctuation">,</span>a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>b<span class="token punctuation">.</span><span class="token function">getNumLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token operator">:</span><span class="token punctuation">}</span>
+   <span class="token operator">|</span>  idf<span class="token operator">:</span>b
+   <span class="token punctuation">{</span><span class="token operator">:</span>
+      RESULT <span class="token operator">=</span> Arbre<span class="token punctuation">.</span><span class="token function">creation2</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>ListeIdent<span class="token punctuation">,</span>
+      	Arbre<span class="token punctuation">.</span><span class="token function">creation0</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>Vide<span class="token punctuation">,</span>parser<span class="token punctuation">.</span><span class="token function">numLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>b<span class="token punctuation">,</span>bleft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token operator">:</span><span class="token punctuation">}</span>
+   <span class="token punctuation">;</span>
+</code></pre>
+</div>
+</body>
+
+</html>
