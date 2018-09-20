@@ -18,9 +18,11 @@ Pour créer de nouveaux fichiers de test (si besoin) :
 
 Pour compiler le programme de compilation jcas :
 
-> chmod -R u+x ProjetCompil/
-> cd ProjetCompil/src/fr/esisar/compilation/syntaxe/
-> ./compil.sh
+```
+chmod -R u+x ProjetCompil/
+cd ProjetCompil/src/fr/esisar/compilation/syntaxe/
+./compil.sh
+```
 
 Pour lancer les analyses lexicales et syntaxiques sur les programmes de test :
 
