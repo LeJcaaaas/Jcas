@@ -14,7 +14,7 @@ Le compilateur quant à lui est composé d'une série de classes Java, interagis
 
 Pour créer de nouveaux fichiers de test (si besoin) :
 
-> java -jar jcasGenerator/jcasGenerator.final.jar
+``` java -jar jcasGenerator/jcasGenerator.final.jar ```
 
 Pour compiler le programme de compilation jcas :
 
