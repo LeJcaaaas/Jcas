@@ -144,9 +144,9 @@ liste_decl ::= liste_decl:a1 decl:a2 POINT_VIRGULE
    :}
    ;
 
-// ---------------------------------------------------------------------------
-// Debut des regles definies par le groupe Sauger-Jarry-Thomas-Bellanger (2018)
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------
+// Debut des regles du groupe Sauger-Jarry-Thomas-Bellanger (2018)
+// ----------------------------------------------------------------
 
 decl ::= liste_idf:a DEUX_POINTS type:b
    {:
@@ -159,8 +159,8 @@ liste_idf ::= liste_idf:a VIRGULE idf:b
    :}
    |  idf:b
    {:
-      vide = Arbre.creation0(Noeud.Vide,parser.numLigne());
-      RESULT = Arbre.creation2(Noeud.ListeIdent,vide,b,b.getNumLigne());
+      RESULT = Arbre.creation2(Noeud.ListeIdent,
+      	Arbre.creation0(Noeud.Vide,parser.numLigne()),b,bleft);
    :}
    ;
 
@@ -186,11 +186,11 @@ type_intervalle ::= constante:a DOUBLE_POINT constante:b
 
 constante ::= PLUS const:a
    {:
-      RESULT = Arbre.creation1(Noeud.PlusUnaire(a,aleft));
+      RESULT = Arbre.creation1(Noeud.PlusUnaire,a,aleft);
    :}
    |  MOINS const:a
    {: 
-      RESULT = Arbre.creation1(Noeud.MoinsUnaire(a,aleft));
+      RESULT = Arbre.creation1(Noeud.MoinsUnaire,a,aleft);
    :}
    |  const:a
    {:
@@ -207,7 +207,7 @@ const ::= CONST_ENT:a
       RESULT = a;
    :}
    ;
-idf ::= IDF
+idf ::= IDF:a
    {:
       RESULT = Arbre.creationIdent(a,aleft);
    :}
@@ -219,8 +219,8 @@ liste_inst ::= liste_inst:a inst:b POINT_VIRGULE
    :}
    |  inst:b POINT_VIRGULE
    {:
-      vide = Arbre.creation0(Noeud.Vide,parser.numLigne());
-      RESULT = Arbre.creation2(Noeud.ListeInst,vide,b,bleft);
+      RESULT = Arbre.creation2(Noeud.ListeInst,
+	Arbre.creation0(Noeud.Vide,parser.numLigne()),b,bleft);
    :}
    ;
 
@@ -242,8 +242,8 @@ inst ::= NULL
    :}
    |  IF exp:a THEN liste_inst:b END
    {:
-      vide = Arbre.creation0(Noeud.Vide,parser.numLigne());
-      RESULT = Arbre.creation3(Noeud.Si,a,b,vide,aleft);
+      RESULT = Arbre.creation3(Noeud.Si,a,b,
+      	Arbre.creation0(Noeud.Vide,parser.numLigne()),aleft);
    :}
    |  IF exp:a THEN liste_inst:b ELSE liste_inst:c END
    {:
@@ -279,8 +279,11 @@ liste_exp ::= liste_exp:a VIRGULE exp:b
    :}
    |  exp:b
    {:
-      vide = Arbre.creation0(Noeud.Vide,parser.numLigne());
-      RESULT = Arbre.creation2(Noeud.ListeExp,vide,b,b.getNumLigne());
+      RESULT = Arbre.creation2(Noeud.ListeExp,
+	Arbre.creation0(Noeud.Vide,parser.numLigne()),
+	b,b.getNumLigne());
+	
+	// RESULT = b;
    :}
    ;
    

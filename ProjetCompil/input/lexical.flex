@@ -228,23 +228,24 @@ import java.util.Hashtable;
 
 CHIFFRE		= [0-9]
 LETTRE		= [a-zA-Z]
-CARACTERE	= [\043-\176]
+CARACTERE_CH	= [\043-\176]|"!"|" "
+CARACTERE_CO	= [\040-\176]|"\t"
 SIGNE		= "+"|"-"
 
 NATUREL		= {CHIFFRE}{CHIFFRE}*
-DECIMAL		= {SIGNE}?{NATUREL}.{NATUREL}
+DECIMAL		= {SIGNE}?{NATUREL}"."{NATUREL}
 EXPOSANT	= ("E"|"e") {SIGNE}?{NATUREL}
 
-CAR_CHAINE	= CARACTERE|" "|"!"
-CAR_COMMENT	= CARACTERE|"("|")"|"*"
-
-IDF		= {LETTRE}({LETTRE}|{CHIFFRE}|"_")*
+CAR_CHAINE	= CARACTERE|"#"|" "|"!"
 
 CONST_ENT	= {NATUREL}
 CONST_REEL	= {DECIMAL}{EXPOSANT}?
-CONST_CHAINE	= \"({CAR_CHAINE}|(\"\"))*\"
+CONST_CHAINE	= "\""({CARACTERE_CH}|"\"\"")*"\""
 
-COMMENTAIRE	= "--"{CAR_COMMENT}*
+
+COMMENTAIRE	= "--"{CARACTERE_CO}*
+
+IDF		= {LETTRE}({LETTRE}|{CHIFFRE}|"_")*
 
 %%
 
@@ -315,7 +316,8 @@ COMMENTAIRE	= "--"{CAR_COMMENT}*
 
 {CONST_CHAINE} {return symbol(sym.CONST_CHAINE,yytext());}
 
-{COMMENTAIRE} {}
+{COMMENTAIRE}
+    {System.out.println(numLigne()+" Commentaire : "+yytext());}
 
 // -- Exception par defaut, lexeme introuvable
 
