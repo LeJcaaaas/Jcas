@@ -8,7 +8,6 @@ package fr.esisar.compilation.verif;
 
 public enum ErreurContext {
 
-   NameError,		// IDF est un mot-clef
    EnvtError,		// IDF jamais ete declare
    LookupError,		// Erreur de redeclaration
    IndexError,		// Erreur de plages numeriques
@@ -29,7 +28,6 @@ public enum ErreurContext {
       
       switch (this)
       {
-         case NameError:	msg = "Identificateur reserve"; break;
          case EnvtError:	msg = "Identificateur inconnu";	break;
          case LookupError:	msg = "Identificateur declare";	break;
          case IndexError:	msg = "Plage num. incorrecte";	break;
