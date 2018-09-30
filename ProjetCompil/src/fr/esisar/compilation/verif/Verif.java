@@ -232,7 +232,8 @@ public class Verif {
 	while (temp.getNoeud() != Noeud.Vide)
 	{
 		Type t = temp.getFils2().getDecor().getType();
-		if (!(t instanceof TypeInterval) && t != Type.Real && t != Type.String)
+		if (	!(t instanceof TypeInterval)
+			&& t != Type.Real && t != Type.String )
 		{
 			int line =  temp.getFils2().getNumLigne();
 	  		ErreurContext e = ErreurContext.TypeError;
@@ -354,7 +355,7 @@ public class Verif {
 			else
 			{
 			 ErreurContext e = ErreurContext.TypeError;
-			 String m = t1.toString()+" != "+t2.toString();
+			 String m = a.getNoeud()+" != "+t.toString();
 			 e.leverErreurContext(m,a.getNumLigne());
 			}
 			
@@ -392,7 +393,8 @@ public class Verif {
 			    e.leverErreurContext(m,a.getNumLigne());
    			}
    			
-   			a.setDecor((TypeArray)(t1).getElement());
+   			Type elm = (TypeArray)(t1).getElement();
+   			a.setDecor(new Decor(elm));
 
    			verifier_EXP(c);
    			
@@ -478,7 +480,8 @@ public class Verif {
 			break;
 		
 		case Ident:
-			Defn def = env.chercher(a.getChaine().toLowerCase());
+			String idf = a.getChaine().toLowerCase();
+			Defn def = env.chercher(idf);
 			if(def == null)
 			{
 				ErreurContext e;
@@ -488,7 +491,9 @@ public class Verif {
 				e.leverErreurContext(s,ligne);
 			}
 			NatureDefn nat = def.getNature();
-			if (nat != NatureDefn.Var && nat != NatureDefn.ConstInteger && nat != NatureDefn.ConstBoolean)
+			if (	nat != NatureDefn.Var && 
+				nat != NatureDefn.ConstInteger && 
+				nat != NatureDefn.ConstBoolean )
 			{
 				ErreurContext e;
 				int ligne = a.getNumLigne();
