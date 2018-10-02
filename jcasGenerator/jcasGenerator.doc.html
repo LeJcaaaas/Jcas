@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JcasGenerator.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="jcasgenerator">JcasGenerator</h1>
+<p>Je vais vous expliquer comment j’ai réaliser la génération de code Jcas.</p>
+<h1 id="fonctionnement">Fonctionnement</h1>
+<p>Le programme .jar doit être placé dans le dossier de test.</p>
+<pre class=" language-java"><code class="prism  language-java">java <span class="token operator">-</span>jar jcas<span class="token punctuation">.</span>jar
+</code></pre>
+<p>Une fois lancé, le programme demande le nombre de fichier de tests qui doit être écrit.<br>
+Ensuite il faut spécifier <code>juste</code> ou <code>faux</code> pour spécifier si l’ensemble des programmes créés soit faux lexicalement et syntaxiquement.<br>
+Enfin il ne faudra plus que lancer les scripts qui feront le travail.</p>
+<h1 id="architecture">Architecture</h1>
+<p>Le programme génère un ensemble de variables aléatoires et un ensemble de types qu’il y associe.<br>
+Ensuite il prend en compte les variables générés et utilise parmis les fonctions <code>write, read, if, while</code> le contenu du programme. L’implémentation de fonctions imbriquées n’est pas prise en compte. Toutefois le type des variables est prise en compte lors des affections et des conditions.<br>
+Les commentaires sont également générés en nombre aléatoire.</p>
+<h2 id="programme-faux">Programme faux</h2>
+<p>En spécifiant <code>faux</code>, le programme va insérer des morceaux de programmes à partir d’un programme juste pour le fausser. On aura ainsi plusieurs cas possibles de faux programmes.</p>
+</div>
+</body>
+
+</html>
