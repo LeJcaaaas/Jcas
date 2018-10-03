@@ -47,7 +47,7 @@ public class Generator {
 		Generator lejcas = new Generator();
 		
 		System.out.println(" Bienvenue sur le générateur de code JCas");
-		lejcas.Generate();
+		//lejcas.Generate();
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Combien de fichiers de tests voulez vous?");
@@ -58,13 +58,14 @@ public class Generator {
 	
 		if (res.equals("juste")) {
 			typeProg = true;
+			
 		}
 		else {
 			typeProg = false;
 			System.out.println("Programme faux");
 		}
 		
-		
+		lejcas.Generate();
 		
 	}
 	
@@ -88,7 +89,7 @@ public class Generator {
 				System.out.println("Ecriture réussie"); 
 				out.close();
 				i = i+1;
-				System.out.println(progfinal);	
+				//System.out.println(progfinal);	
 				progfinal = program;
 				varUsed.clear();
 				typeVar.clear();
@@ -126,7 +127,7 @@ public class Generator {
 				System.out.println(progfinal);
 				System.out.println("Ecriture reussie"); 
 				out.close();
-				System.out.println(progfinal);
+				//System.out.println(progfinal);
 				i = i+1;
 				progfinal = program;
 			}
@@ -272,7 +273,6 @@ public class Generator {
 	public String characGenerator(String array) {
 		
 		ArrayList<String> result = new ArrayList<String>();
-		int indice = 0;
 		
 		switch(array){
 			case "type":
