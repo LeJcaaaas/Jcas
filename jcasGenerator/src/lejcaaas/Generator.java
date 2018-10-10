@@ -47,7 +47,6 @@ public class Generator {
 		Generator lejcas = new Generator();
 		
 		System.out.println(" Bienvenue sur le générateur de code JCas");
-		lejcas.Generate();
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Combien de fichiers de tests voulez vous?");
@@ -61,10 +60,11 @@ public class Generator {
 		}
 		else {
 			typeProg = false;
-			System.out.println("Programme faux");
+			//System.out.println("Programme faux");
 		}
-		
-		
+		lejcas.Generate();
+
+		sc.close();
 		
 	}
 	
@@ -76,11 +76,13 @@ public class Generator {
 		if( typeProg == true) {
 			
 			while( i < nbProg) {
-			
+				
 				progfinal = progfinal.concat(varBeautify(indiceGenerator("variable")));
 				progfinal = progfinal.concat(bodyGenerator());
 				nomProg = stringGenerator(20);
+					
 				File fichier = new File(nomProg);
+		
 
 				byte[] buf = progfinal.getBytes();
 				FileOutputStream out = new FileOutputStream(fichier);
@@ -88,7 +90,7 @@ public class Generator {
 				System.out.println("Ecriture réussie"); 
 				out.close();
 				i = i+1;
-				System.out.println(progfinal);	
+				//System.out.println(progfinal);	
 				progfinal = program;
 				varUsed.clear();
 				typeVar.clear();
@@ -98,7 +100,6 @@ public class Generator {
 		}else {
 			
 			while( i < nbProg) {
-				
 				String var = varBeautify(1);
 				String body = bodyGenerator();
 				String str = stringGenerator(1);
@@ -123,12 +124,14 @@ public class Generator {
 				byte[] buf = progfinal.getBytes();
 				FileOutputStream out = new FileOutputStream(fichier);
 				out.write(buf);
-				System.out.println(progfinal);
+			//	System.out.println(progfinal);
 				System.out.println("Ecriture reussie"); 
 				out.close();
-				System.out.println(progfinal);
 				i = i+1;
 				progfinal = program;
+				varUsed.clear();
+				typeVar.clear();
+				natureIdent.clear();
 			}
 	
 		}
@@ -272,7 +275,7 @@ public class Generator {
 	public String characGenerator(String array) {
 		
 		ArrayList<String> result = new ArrayList<String>();
-		int indice = 0;
+		//int indice = 0;
 		
 		switch(array){
 			case "type":
@@ -361,6 +364,7 @@ public class Generator {
 		bool.add("True");
 		bool.add("False");
 		
+		//System.out.println(type);
 		if( typeProg == true) {
 			if( type == null) {
 				
@@ -370,7 +374,7 @@ public class Generator {
 			else if( type == "boolean") {
 				i = (int)(Math.random()*(bool.size()));
 				text=  tab.concat(variable).concat(" := ").concat(bool.get(i)).concat(eol).concat("\n");
-				System.out.println("TEXT : " + text);
+				//	System.out.println("TEXT : " + text);
 			}
 			else if( type == "doubleArray") {
 				if( (i = natureIdent.indexOf("array")) != -1) { // pr�sence d'un array pour le doublearray
@@ -394,9 +398,12 @@ public class Generator {
 					text = tab.concat(variable).concat(" := ").concat(variable).concat(eol).concat("\n");
 				}
 			}
-			else if( type == "array") {
+			else if( type == "array" || type.contains("array")) {
 				String affec = characGenerator("affect");
+				//System.out.println("HELLO");
 				if( affec.equals(" := ")) {
+					//System.out.println("HELLO1");
+
 					if( natureIdent.get(varUsed.indexOf(variable)) == "arrayReal" && (i = natureIdent.indexOf("real")) != -1) {
 						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(i)).concat(eol).concat("\n");
 					}
@@ -405,17 +412,32 @@ public class Generator {
 					}
 					else if( natureIdent.get(varUsed.indexOf(variable)) == "arrayBoolean" && (i = natureIdent.indexOf("boolean")) != -1) {
 						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(i)).concat(eol).concat("\n");
+					}
+					else {
+						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(0)).concat(affec).concat(varUsed.get(0)).concat(eol).concat("\n");
+
 					}
 				}
 				else {
+					
+
 					if( natureIdent.get(varUsed.indexOf(variable)) == "arrayReal" && (i = natureIdent.indexOf("real")) != -1) {
 						text = tab.concat(variable).concat("[1]").concat(varUsed.get(i)).concat(affec).concat(varUsed.get(i)).concat(eol).concat("\n");
+					//	System.out.println("HELLO2");
 					}
 					else if( natureIdent.get(varUsed.indexOf(variable)) == "arrayInteger" && (i = natureIdent.indexOf("integer")) != -1) {
 						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(i)).concat(affec).concat(varUsed.get(i)).concat(eol).concat("\n");
+						//System.out.println("HELLO3");
+
 					}
 					else if( natureIdent.get(varUsed.indexOf(variable)) == "arrayBoolean" && (i = natureIdent.indexOf("boolean")) != -1) {
 						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(i)).concat(affec).concat(varUsed.get(i)).concat(eol).concat("\n");
+						//System.out.println("HELLO4");
+
+					}else {
+						text = tab.concat(variable).concat("[1] := ").concat(varUsed.get(0)).concat(affec).concat(varUsed.get(0)).concat(eol).concat("\n");
+						//System.out.println("HELLO5");
+
 					}
 				}
 				
@@ -465,7 +487,7 @@ public class Generator {
 				faux.add(text3);
 			}
 			
-			if(typeVar.contains("array") && !natureIdent.contains("doubleArray")) {
+			if(typeVar.contains("array") && !natureIdent.equals("doubleArray")) {
 				// Inclu Array = True ou Array = Integer
 				i = typeVar.indexOf("integer");
 				if ( i == -1) text3 = tab.concat(typeVar.get(natureIdent.indexOf("array"))).concat(" := ").concat("True").concat(eol).concat("\n") ;
@@ -499,8 +521,9 @@ public class Generator {
 	public String bodyGenerator() {
 		String rep = commentGenerator();
 		String charac = characGenerator("word");
+
 		rep = rep.concat(motSemantique(charac));
-		
+
 		return rep;
 	}
 	
@@ -515,6 +538,7 @@ public class Generator {
 	
 		if( mot == "write") {
 		
+			
 			if( typeProg == true) {
 				i = typeVar.indexOf("integer");
 				if( i == -1) i = typeVar.indexOf("real");
@@ -525,10 +549,11 @@ public class Generator {
 			}
 			else {
 				i = natureIdent.indexOf("array");
+				
 				if( i == -1) i = natureIdent.indexOf("doubleArray");
 				if( i == -1) text = "";
 				else {
-					text = tab.concat(mot).concat("(").concat(varUsed.get(i)).concat(")");
+					text = tab.concat(mot).concat("(").concat(varUsed.get(0)).concat(")");
 				}
 			
 				
@@ -565,7 +590,7 @@ public class Generator {
 			if( i == -1) {
 				i = 1;
 				//System.out.println("test i == -1");
-				for(int j=0; j<typeVar.size(); j++) {
+				for(int j=0; j<typeVar.size();) {
 					if ( (typeVar.get(j).equals("integer") || typeVar.get(j).contains("..") || typeVar.get(j).equals("real")) && i<=2 && typeVar.size() > 1) {
 						
 						text = text.concat(varUsed.get(j));
@@ -576,9 +601,16 @@ public class Generator {
 						// Ajout 
 						var2 = varUsed.get(i);
 						
-						while(natureIdent.get(i).contains("array") ) {
+							/*while (natureIdent.get(i).contains("array") ) {
 							// On ne veut pas de tableaux ex : boolean == tableau FAUX
 							var2 = varUsed.get((int)(Math.random()*varUsed.size()));
+						}
+						*/
+						if( i >0 ) {
+							var2 = varUsed.get(i-1);
+						}
+						else if( i < varUsed.size()) {
+							var2 = varUsed.get(i+1);
 						}
 						
 						text = text.concat(var2).concat(")").concat(tab).concat("do").concat("\n");
@@ -615,6 +647,7 @@ public class Generator {
 				}
 				else {
 					//text = text.concat(tab).concat(bodyVarBeautify(varUsed.get(0),null));
+					//System.out.println("var2 " + varUsed.get(0));
 					text = text.concat(tab).concat(bodyVarBeautify(varUsed.get(0),natureIdent.get(varUsed.indexOf(varUsed.get(0)))));
 				
 				}
@@ -641,11 +674,21 @@ public class Generator {
 						// Ajout 
 						var2 = varUsed.get(i);
 						
-						while(natureIdent.get(i).contains("array") ) {
+						/*while (natureIdent.get(i).contains("array") ) {
 							// On ne veut pas de tableaux ex : boolean == tableau FAUX
 							var2 = varUsed.get((int)(Math.random()*varUsed.size()));
 						}
-						
+						*/
+					//	System.out.println(i);
+						if( i > 0 ) {
+							var2 = varUsed.get(i-1);
+						}
+						else if( i +1 < varUsed.size()) {
+							var2 = varUsed.get(i+1);
+						}
+						else {
+							var2 = varUsed.get(0);
+						}
 						text = text.concat(var2).concat(")").concat(tab).concat("then").concat("\n").concat(tab);
 					}
 				}
