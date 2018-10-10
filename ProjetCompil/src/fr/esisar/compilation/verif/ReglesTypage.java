@@ -26,6 +26,7 @@ public class ReglesTypage
 	NatureType n2 = t2.getNature();
 	
 	if (	(n1 == NatureType.Interval && n1 == n2)
+	||	(n1 == NatureType.Boolean  && n1 == n2)
 	||	(n1 == NatureType.Real     && n1 == n2)
 	||	(n1 == NatureType.Interval && n2 == NatureType.Real)
 	||	(n1 == NatureType.Real && n2 == NatureType.Interval) )
