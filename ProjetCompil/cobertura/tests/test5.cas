@@ -1,17 +1,17 @@
--- programme 7
+-- programme 5
 
-programm
-    a: integer;
+prOGRam a: integer;
     b: String;
     T : array [1 .. 20] of array[1 .. 10] of array[1 .. 10] of integer;
-begin
+BEGIn
     a=0; 
-    fOR i := 7 downto a do
+    fOR i := 7 DOwnTO a dO 
         T[i][7][i]=-6;
         a=a+1;
     END;
     a=a-7; 
     b="Hello""World";
-    c="Faux argument";
     New_LINe;
 EnD.
+a=3;
+b="Coucou";

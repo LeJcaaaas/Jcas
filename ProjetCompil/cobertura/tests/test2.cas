@@ -1,6 +1,6 @@
 -- programm 2
 
-prOGRaMm a: integer;
+prOGRam a: integer;
     b: String;
     T : array [1 .. 20] of array[1 .. 10] of array[1 .. -4] of integer;
 BEGIn

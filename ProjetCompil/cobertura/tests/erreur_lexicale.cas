@@ -1,0 +1,9 @@
+program
+	j : integer ;
+	c : array[2 .. 7] of real;
+
+begin 
+	_i;
+	read("Hello I should not be here") ;
+	new_line ;
+end.

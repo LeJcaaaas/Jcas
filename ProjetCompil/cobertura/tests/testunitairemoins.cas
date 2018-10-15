@@ -1,0 +1,7 @@
+program
+	n : integer ;
+begin
+	n := 5 ;
+	n := -n ;
+	new_line ;
+end.

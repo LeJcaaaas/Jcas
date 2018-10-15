@@ -1,0 +1,8 @@
+program
+	a : boolean;
+	a : boolean;
+
+begin 
+
+	a := True ;
+end.

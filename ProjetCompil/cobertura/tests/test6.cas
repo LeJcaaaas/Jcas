@@ -1,6 +1,8 @@
--- programm 4
+-- programme 6
 
-prOGRaMm a: integer;
+prOGRam 
+    a: integer;
+    b: integer;
     b: String;
     T : array [1 .. 20] of array[1 .. 10] of array[1 .. 10] of integer;
 BEGIn
@@ -8,7 +10,8 @@ BEGIn
     fOR i := 7 DOwnTO a dO 
         T[i][7][i]=-6;
         a=a+1;
-    END; 
+    END;
+    a=a-7; 
     b="Hello""World";
     New_LINe;
 EnD.

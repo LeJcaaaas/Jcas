@@ -1,0 +1,12 @@
+program
+	a : boolean ;
+
+begin 
+	-- Hello I am a comment
+
+	if 5 then 
+         a := true;
+        end;
+        
+	new_line ;
+end.
