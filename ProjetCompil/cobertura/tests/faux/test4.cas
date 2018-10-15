@@ -1,0 +1,14 @@
+-- programm 4
+
+prOGRaMm a: integer;
+    b: String;
+    T : array [1 .. 20] of array[1 .. 10] of array[1 .. 10] of integer;
+BEGIn
+    a=0; 
+    fOR i := 7 DOwnTO a dO 
+        T[i][7][i]=-6;
+        a=a+1;
+    END; 
+    b="Hello""World";
+    New_LINe;
+EnD.

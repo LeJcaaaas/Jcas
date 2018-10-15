@@ -1,0 +1,17 @@
+program
+	a : array[29396791..184954977] of array[-2147483647..-2147483647]  ;
+	j : boolean	g : real ;
+
+begin 
+ ;
+	b : array[2098284335..2133313970] of integer ;
+	i : 2118869173 .. 2132764579 ;
+	e : 497127759 .. 1377806331 ;
+	h : real ;
+
+begin 
+
+	-- Hello I am a comment
+	write(g) ;
+	new_line ;
+end.

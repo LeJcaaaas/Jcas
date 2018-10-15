@@ -1,0 +1,11 @@
+program
+	e : array[1674201715..2113292006] of integer ;
+	c : array[1763358260..1877331111] of boolean ;
+	a : integer ;
+	i : real ;
+
+begin 
+
+	write(a) ;
+	new_line ;
+end.

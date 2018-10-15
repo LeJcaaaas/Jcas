@@ -1,0 +1,20 @@
+program
+	h : 555540985 .. 1402919687 ;
+	j : real ;
+	a : array[112008620..1899118807] of boolean ;
+	i : integer ;
+	g : boolean ;
+	c : real ;
+	f : 902233343 .. 2102584420 ;
+
+begin 
+
+	-- Hello I am a comment
+		b : 1674848830 .. 2049724395 ;
+
+begin 
+if(g)	then
+		g := -2147483648 ;
+	end ;
+	new_line ;
+end.

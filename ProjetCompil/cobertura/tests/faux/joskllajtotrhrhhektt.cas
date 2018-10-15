@@ -1,0 +1,18 @@
+program
+	f : 1734804675 .. 1820423819 ;
+	g : boolean ;
+	a : integer ;
+	e : integer ;
+	c : integer ;
+	h : integer ;
+	i :	b : array[784065235..997348035] of boolean ;
+
+begin 
+ integer ;
+	j : array[1121492028..1348040946] of boolean ;
+
+begin 
+
+	read( Hello I should not be here ) ;
+	new_line ;
+end.

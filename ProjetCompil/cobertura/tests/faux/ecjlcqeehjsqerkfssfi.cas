@@ -1,0 +1,21 @@
+program
+	c : boolean ;
+	f : integer ;
+	e : array[2063572404..2118915398] of real ;
+	j : 1385560463 .. 2121823002 ;
+	i : 68951266 .. 140023821 ;
+	a : 1005576510 .. 1477547963 ;
+	h : array[1504560102..2049145990] of bool	g : boolean ;
+
+begin 
+ean ;
+	b : 2058816320 .. 2074837059 ;
+
+begin 
+
+	-- Hello I am a comment
+	if(g)	then
+		g := -2147483648 ;
+	end ;
+	new_line ;
+end.

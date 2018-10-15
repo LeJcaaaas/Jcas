@@ -1,0 +1,17 @@
+program
+	g : real ;
+	a : boolean ;
+	f : boolean ;
+	i : real ;
+	b : boolean ;
+	j : integer ;
+	h : real ;
+	e : 94316807 .. 987873351 ;
+
+begin 
+
+	while(a)	do
+		a := True ;
+	end ;
+	new_line ;
+end.

@@ -1,0 +1,14 @@
+program
+	e : integer ;
+	b : array[1278611412..1624109298] of real ;
+	f : integer ;
+	a : array[584331729..1714620424] of real ;
+	c : boolean ;
+	j : 655327982 .. 800173952 ;
+	h : boolean ;
+
+begin 
+
+	write(e) ;
+	new_line ;
+end.

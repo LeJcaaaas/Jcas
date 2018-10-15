@@ -1,0 +1,16 @@
+program
+	a : integer ;
+	i : integer ;
+	c : boolean ;
+	j : real ;
+	f : boolean ;
+	h : 525146507 .. 1390188641 ;
+
+begin 
+
+	-- Hello I am a comment
+	for a := 1 to 20 do
+		a := 2046372927 ;
+	end ;
+	new_line ;
+end.

@@ -1,0 +1,18 @@
+program
+	h : boolean ;
+	i : integer ;
+	f : 1598755959 .. 1714356265 ;
+	a : integer ;
+	c : boolean ;
+	g : array[473011404..1773001604] of integer ;
+	j : real ;
+	e : 1406862038 .. 2045863324 ;
+
+begin 
+
+	-- Hello I am a comment
+	for i := 1 to 20 do
+		i := 9.055777768534318E8 + i ;
+	end ;
+	new_line ;
+end.

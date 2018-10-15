@@ -1,0 +1,16 @@
+program
+	g : array[549225869..927732550] of boolean ;
+	i : real ;
+	c : 996951952 .. 1385222851 ;
+	f : real ;
+	j : integer ;
+	h : integer ;
+
+begin 
+
+	-- Hello I am a comment
+	for j := 1 to 20 do
+		j := 4.086773584759052E8 * j ;
+	end ;
+	new_line ;
+end.

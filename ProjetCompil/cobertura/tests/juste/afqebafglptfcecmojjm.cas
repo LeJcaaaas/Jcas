@@ -1,0 +1,8 @@
+program
+
+begin 
+
+	-- Hello I am a comment
+	write(Hello I am an input) ;
+	new_line ;
+end.

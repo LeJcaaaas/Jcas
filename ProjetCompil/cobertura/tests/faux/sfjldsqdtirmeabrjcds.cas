@@ -1,0 +1,16 @@
+program
+	e : b	c : integer ;
+
+begin 
+oolean ;
+	b : boolean ;
+	f : 810944842 .. 1100493004 ;
+
+begin 
+
+	-- Hello I am a comment
+	for c := 1 to 20 do
+		c := -2147483648 ;
+	end ;
+	new_line ;
+end.

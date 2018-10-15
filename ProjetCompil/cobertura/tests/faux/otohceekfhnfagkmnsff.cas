@@ -1,0 +1,18 @@
+program
+	e : boolean ;
+	j : array[1817157404..1821464622] of boolean ;
+		i : 920159691 .. 1886767728 ;
+
+begin 
+g : real ;
+	f : 1445362929 .. 1772738560 ;
+	b : real ;
+	a : 2130408090 .. 2143025688 ;
+
+begin 
+
+
+	-- Hello I am a comment
+	null ;
+	new_line ;
+end.

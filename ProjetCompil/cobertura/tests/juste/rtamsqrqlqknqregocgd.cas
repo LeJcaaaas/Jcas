@@ -1,0 +1,12 @@
+program
+	f : array[242285936..1034814291] of real ;
+	a : real ;
+	h : 1454664474 .. 2091442199 ;
+	e : integer ;
+
+begin 
+
+	-- Hello I am a comment
+	write(e) ;
+	new_line ;
+end.

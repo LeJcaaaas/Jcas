@@ -1,0 +1,18 @@
+program
+	b : integer ;
+	c : integer ;
+	i : real ;
+	h : integer ;
+	j : integer ;
+	g : 1823740371 .. 1920110668 ;
+
+b	e : integer ;
+
+begin 
+egin 
+
+	if(e<=j)	then
+		False := False ;
+	end ;
+	new_line ;
+end.

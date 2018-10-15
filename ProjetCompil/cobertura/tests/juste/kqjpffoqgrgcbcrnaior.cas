@@ -1,0 +1,14 @@
+program
+	h : integer ;
+	f : 815536157 .. 1080228191 ;
+	a : array[81515830..2034894707] of array[-2147483647..-2147483647]  ;
+	e : array[1773918175..2006076676] of real ;
+	c : 1599085903 .. 1779071135 ;
+	b : integer ;
+	j : integer ;
+
+begin 
+
+	read(h) ;
+	new_line ;
+end.

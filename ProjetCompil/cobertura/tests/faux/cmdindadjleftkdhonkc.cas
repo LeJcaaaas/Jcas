@@ -1,0 +1,13 @@
+program
+	j : integer ;
+	f : array[907172222..1856003568] of real	i : 1175635432 .. 1755277316 ;
+
+begin 
+ ;
+	c : array[2129168975..2145802248] of real ;
+
+begin 
+
+	read( Hello I should not be here ) ;
+	new_line ;
+end.

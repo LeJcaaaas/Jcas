@@ -1,0 +1,9 @@
+program
+	a : boolean ;
+
+begin 
+
+	-- Hello I am a comment
+
+	new_line ;
+end.

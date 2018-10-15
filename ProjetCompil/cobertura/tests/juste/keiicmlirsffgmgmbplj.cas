@@ -1,0 +1,17 @@
+program
+	i : integer ;
+	g : array[1332287176..1455529020] of real ;
+	b : 827025217 .. 1469186005 ;
+	j : 782035573 .. 1221161560 ;
+	f : real ;
+	e : boolean ;
+	c : integer ;
+
+begin 
+
+	-- Hello I am a comment
+	for i := 1 to 20 do
+		i := 6.925439756571174E8 * i ;
+	end ;
+	new_line ;
+end.

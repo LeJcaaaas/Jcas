@@ -1,0 +1,17 @@
+program
+	e : 1599764193 .. 1943163714 ;
+	g : boolean ;
+	c : real ;
+	i : integer ;
+	f : boolean ;
+
+begin 
+
+	for i := 1 to 20 do
+		False := False ;
+	end ;
+	new_line	a : boolean ;
+
+begin 
+ ;
+end.

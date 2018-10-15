@@ -1,0 +1,19 @@
+program
+	c : 72711626 .. 635169605 ;
+	g : integer ;
+	h : real ;
+	i : boolean ;
+	b : 1590159164 .. 1604830134 ;
+	e : boolean ;
+	f : real ;
+
+begin 
+
+	if(a)	then
+		False := False ;
+	end ;
+	new_li	a : boolean ;
+
+begin 
+ne ;
+end.

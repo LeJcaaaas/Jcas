@@ -1,0 +1,16 @@
+program
+	j : boolean ;
+	e : 1706056717 .. 1768770448 ;
+	f : real ;
+	i : boolean ;
+	a : real ;
+	h : integer ;
+	g : real ;
+	c : 1901187416 .. 2054461121 ;
+
+begin 
+
+	-- Hello I am a comment
+	read(h) ;
+	new_line ;
+end.

@@ -1,0 +1,15 @@
+program
+	i : array[755852463..1176589493] of integer ;
+	g : 796644854 .. 909631084 ;
+	a : real ;
+	e : boolean ;
+	f : array[1876001068..2048083362] of boolean ;
+
+begin 
+
+	-- Hello I am a comment
+	while(e)	do
+		e := True ;
+	end ;
+	new_line ;
+end.

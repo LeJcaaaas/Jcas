@@ -1,0 +1,18 @@
+program
+	c : array[349918322..640044163] of integer ;
+	f : 1272259211 .. 1442389331 ;
+	g : integer ;
+	e : array[1125724746..1306920031] of integer ;
+	h : 1506151691 .. 1946171730 ;
+	j : boolean ;
+	b : 976691886 .. 1176109296 ;
+	i : 1680769854 .. 1683981950 ;
+
+begin 
+
+	-- Hello I am a comment
+	while(j)	do
+		j := True ;
+	end ;
+	new_line ;
+end.

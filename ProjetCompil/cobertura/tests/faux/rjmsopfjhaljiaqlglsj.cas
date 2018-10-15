@@ -1,0 +1,16 @@
+program
+	b : array[682439919..988918195] of real ;
+	j	a : real ;
+
+begin 
+ : integer ;
+	g : integer ;
+
+begin 
+
+	-- Hello I am a comment
+	for j := 1 to 20 do
+		j := -2147483648 ;
+	end ;
+	new_line ;
+end.

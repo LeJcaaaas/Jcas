@@ -1,0 +1,17 @@
+program
+	i : real ;
+	b : array[1129813419..1958140077] of real ;
+	g : integer ;
+	h : integer ;
+	j : 1255020246 .. 1619654149 ;
+	f : boolean ;
+	a : integer ;
+
+begin 
+
+	-- Hello I am a comment
+	while(f)	do
+		f := True ;
+	end ;
+	new_line ;
+end.
