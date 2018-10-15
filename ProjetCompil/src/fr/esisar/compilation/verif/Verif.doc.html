@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>verif.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="la-classe-verif">La classe Verif</h1>
+<p><strong>La classe verif permet de réaliser la vérification et la décoration de l’arbre abstrait d’un programme Jcas.<br>
+La première étape consiste à initialiser l’environnement.</strong></p>
+<h3 id="initialiserenv">initialiserEnv</h3>
+<p>La méthode <strong>initialiserEnv</strong> a pour rôle d’initialiser l’environnement du programme.<br>
+Pour ce faire elle crée un environnement vide auquel elle ajoute les types <em>integer</em>, <em>string</em>, <em>real</em> et <em>boolean</em> ainsi que les identifiants réservés <em>true</em>, <em>false</em> et <em>max_int</em>.</p>
+<p>La vérification du programme se fait ensuite en deux parties, la vérification des déclarations et la vérification des instructions.</p>
+<h2 id="partie-déclaration">Partie déclaration</h2>
+<h3 id="verifier_liste_decl">verifier_LISTE_DECL</h3>
+<p>La méthode <strong>verifier_LISTE_DECL</strong> vérifie récursivement que chaque déclaration de la liste et remonte une erreur si elle rencontre une déclaration erronée. Pour cela elle fait appel à la méthode <strong>verifier_DECL</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</p>
+<h3 id="verifier-decl">verifier DECL</h3>
+<p>La méthode <strong>verifier DECL verifie</strong> une déclaration en vérifiant son type et la liste des identifiants qui la constituent. Pour cela elle fait appel aux fonctions <strong>verifier_TYPE</strong> et <strong>verifier_LISTE_IDF</strong>.</p>
+<h3 id="verifier_liste_idf">verifier_LISTE_IDF</h3>
+<p>La méthode <strong>verifier_LISTE_IDF</strong> vérifie récursivement chaque identifiant, si un identifiant est déjà présent dans l’environnement il s’agit d’une redéclaration et donc d’une erreur de contexte, qui est remontée, sinon chaque identifiant est ajouté à l’environnement. La décoration est ensuite ajoutée et l’identifiant résultant est à nouveau testé avec la fonction <strong>verifier_IDF</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</p>
+<h2 id="partie-instructions">Partie instructions</h2>
+<h3 id="verifier_liste_inst">verifier_LISTE_INST</h3>
+<p>La méthode <strong>verifier_LISTE_INST</strong> vérifie récursivement chaque instruction pour savoir si elle est valide. Pour cela elle fait appel à la méthode <strong>verifier_INST</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</p>
+<h3 id="verifier_liste_exp">verifier_LISTE_EXP</h3>
+<p>La méthode <strong>verifier_LISTE_EXP</strong> vérifie récusrivement chaque expression pour savoir si elle est valide. Pour cela elle fait appel à la méthode <strong>verifier_EXP</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</p>
+<h3 id="verifier_inst">verifier_INST</h3>
+<p>La méthode <strong>verifier_INST</strong> vérifie la vaildité de l’instruction au cas par cas parmis toutes les instructions possibles en Jcas. <strong>verifier_INST</strong> fait appel aux fonctions spécifiques <strong>verifier_PAS</strong>, <strong>verifier_WRITE</strong>, <strong>verifier_READ</strong> et <strong>verifier_AFFECT</strong> pour chaque nœud qu’il est possible de rencontrer dans l’arbre.</p>
+<h3 id="verifier_affect">verifier_AFFECT</h3>
+<p>La méthode <strong>verifier_AFFECT</strong> fait appel à la méthode <strong>verifier_PLACE</strong> pour obtenir le type de l’identifiant qui constitue le membre gauche de l’affectation et à <strong>verifier_EXP</strong> pour obtenir le type de l’expression qui constitue le membres droit de l’affectation. Ces appels permettent aussi de vérifier la validité des deux membres. La méthode applique ensuite les règles de compatibilité et remonte une erreur s’il y a lieu.</p>
+<h3 id="verifier_exp">verifier_EXP</h3>
+<p>La méthode <strong>verifier_EXP</strong> applique les règles de compatibilité entre les types du langage Jcas.</p>
+<h3 id="verifier_pas">verifier_PAS</h3>
+<p>La méthode <strong>verifier_PAS</strong> permet de vérifier la validité sémantique d’un identifiant et permet de décorer le nœud qui lui est attribué avec le bon type, soit entier soit matrice de dimension <em>n</em> de type <em>t</em>.</p>
+<h2 id="fonctions-communes-aux-2-parties">Fonctions communes aux 2 parties</h2>
+<h3 id="verifier_type">verifier_TYPE</h3>
+<p>La méthode <strong>verifier_TYPE</strong> se contente de regarder le type attribué au nœud et vérifie au cas par cas avec un appel à des fonctions plus spécifiques.</p>
+<h3 id="verifier_tableau">verifier_TABLEAU</h3>
+<p>La méthode vérifier tableau est légèrement plus complexe que les autres cas de base car il est possible d’avoir des tableau de tableau, de plus un tableau est construit par rapport à un autre type, il est donc nécessaire de faire appel faire appel à <strong>verifier_TYPE</strong> dans <strong>verifier_TABLEAU</strong>.</p>
+<p>Les autres fonctions appliquent des cas de base et ne nécessitent pas d’être détaillés.</p>
+</div>
+</body>
+
+</html>

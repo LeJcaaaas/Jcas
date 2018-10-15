@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReglesTypage</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="les-règles-de-typage">Les Règles De Typage</h1>
+<p><strong>Il existe 3 cas dans lesquels on peut, et on doit, appliquer les règles de typages.</strong></p>
+<h2 id="premier-cas--laffectation">Premier cas : l’affectation</h2>
+<p>La vérification de l’affectation est simple</p>
+<ul>
+<li>On ne peut affecter aux variables de type <em>boolean</em> que des <em>boolean</em></li>
+<li>On ne peut affecter aux variables de type <em>integer</em> que des <em>integer</em></li>
+<li>On peut affecter aux variables de type <em>real</em> des <em>integer</em> ou des <em>real</em></li>
+<li>On peut affecter à un <em>array</em> un autre <em>array</em> qu’un <em>array</em> de même dimension et sur le même type. Cela se fait par appel récursif sur les premiers éléments des deux <em>array</em></li>
+</ul>
+<h2 id="second-cas--opération-binaire">Second cas : Opération binaire</h2>
+<p>Le cas de l’opération binaire est assez similaire au cas de l’affectation</p>
+<ul>
+<li>Les <em>boolean</em> ne supportent que les opérations logiques avec un autre <em>boolean</em></li>
+<li>Les <em>integer</em> et les <em>real</em> ne supportent que les opérations arithmétiques avec des <em>real</em> et des <em>boolean</em></li>
+<li>Les éléments d’<em>array</em> supportent les opérations associées à leur type comme écrit ci-dessus</li>
+</ul>
+<h2 id="troisième-cas--opération-unaire">Troisième cas : Opération unaire</h2>
+<p>Le cas de l’opération unaire est simple</p>
+<ul>
+<li>Les opérateurs + et - peuvent être placés devant et seulement devant des <em>integer</em> et des <em>real</em></li>
+<li>L’opérateur <em>not</em> peut être placé devant et seulement devant un <em>boolean</em></li>
+</ul>
+</div>
+</body>
+
+</html>
