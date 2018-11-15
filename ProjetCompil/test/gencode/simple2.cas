@@ -1,0 +1,7 @@
+program
+   a : integer;
+begin
+   write("Hello I am your doom");
+   new_line;
+end.
+

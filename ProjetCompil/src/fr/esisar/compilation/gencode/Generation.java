@@ -3,7 +3,9 @@ package fr.esisar.compilation.gencode;
 import fr.esisar.compilation.global.src.*;
 import fr.esisar.compilation.global.src3.*;
 
-// Génération de code pour un programme JCas à partir d'un arbre décoré.
+import java.util.ArrayList;
+
+// Génération de code assembleur a partir d'un arbre décoré Jcas
 
 
 class Generation
@@ -16,7 +18,7 @@ class Generation
 	
 	static Prog coder(Arbre a)
 	{
-		Prog.ajouterGrosComment("Programme généré par JCasc");
+		Prog.ajouterGrosComment("JCAS Compilator");
       
 		Generation g = new Generation();
 
@@ -54,10 +56,10 @@ class Generation
 	{		
 		int n = coder_LISTE_IDF(a.getFils1());
 		Operande nb_vars = Operande.creationOpEntier(n);
-		Prog.ajouter(Inst.creation1(Operation.ADDSP,nb_vars))
+		Prog.ajouter(Inst.creation1(Operation.ADDSP,nb_vars));
 	}
 	
-	private Operande code_LISTE_IDF(Arbre a)
+	private int coder_LISTE_IDF(Arbre a)
 	{
 		switch (a.getNoeud())
 		{
@@ -68,6 +70,8 @@ class Generation
 				idfs.add(a.getFils2().getChaine());
 				return (n+1);
 		}
+		
+		return 0;
 	}
 	
 // --- 2. Operations sur la machine (partie instruction)
@@ -109,16 +113,67 @@ class Generation
 	
 	private void coder_WHILE(Arbre a)	{}
 	private void coder_FOR(Arbre a) 	{}
-	private void coder_IF(Arbre a)		{}
-	
-	
-	private void coder_WRITE(Arbre a)	{}
-	private void coder_READ(Arbre a)	{}
+
+	private void coder_IF(Arbre a)
+	{
+		Etiq faux = Etiq.nouvelle("faux");
+		Etiq finsi = Etiq.nouvelle("finsi");
+
+		coder_EXP(a,rx);
+
+		Prog.ajouter(Inst.creation2(Operation.CMP,
+                                Operande.creationOpEntier(1), 
+                                Operande.opDirect(rx)));
+
+		Prog.ajouter(Inst.creation1(Operation.BNE, 
+				Operande.creationOpEtiq(faux)));
+
+		coder_LISTE_INST(a.getFils2());
+		
+		Prog.ajouter(Inst.creation1(Operation.BRA, 
+				Operande.creationOpEtiq(finsi)));
+		
+		Prog.ajouter(faux);		
+		coder_LISTE_INST(a.getFils3());
+		Prog.ajouter(finsi);
+	}
 	
 	private void coder_AFFECT(Arbre a)	{}
 	
-	private void coder_NLINE(Arbre a)	{}
-	private void coder_NOP(Arbre a)		{}
+	private void coder_READ(Arbre a)
+	{
+	
+	}
+	
+	private void coder_WRITE(Arbre a)
+	{
+		if (a.getNoeud() != Noeud.Vide)
+		{
+			coder_WRITE(a.getFils1());
+
+			NatureType natureExp = a.getFils2()
+			.getDecor().getType().getNature();
+
+			switch (natureExp)
+			{
+				case String:
+				Prog.ajouter(Inst.creation1
+				(Operation.WSTR,
+				Operande.creationOpChaine
+				(a.getFils2().getChaine())));
+				break;
+			
+				default: break;
+      			}
+		}
+	}
+	
+	private void coder_NLINE(Arbre a)
+	{
+		Prog.ajouter(Inst.creation0(Operation.WNL));
+	}
+	
+	private void coder_NOP(Arbre a) {}	
 }
 
 
