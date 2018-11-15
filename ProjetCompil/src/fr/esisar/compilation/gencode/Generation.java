@@ -119,7 +119,7 @@ class Generation
 		Etiq faux = Etiq.nouvelle("faux");
 		Etiq finsi = Etiq.nouvelle("finsi");
 
-		coder_EXP(a,rx);
+		// coder_EXP(a,rx);
 
 		Prog.ajouter(Inst.creation2(Operation.CMP,
                                 Operande.creationOpEntier(1), 
@@ -147,24 +147,39 @@ class Generation
 	
 	private void coder_WRITE(Arbre a)
 	{
-		if (a.getNoeud() != Noeud.Vide)
+		Arbre b = a.getFils1();
+		
+		if (b.getNoeud() != Noeud.ListeExp) return;
+		
+		while (b.getNoeud() != Noeud.Vide)
 		{
-			coder_WRITE(a.getFils1());
-
-			NatureType natureExp = a.getFils2()
+			NatureType natureExp = b.getFils2()
 			.getDecor().getType().getNature();
-
+			
 			switch (natureExp)
 			{
 				case String:
-				Prog.ajouter(Inst.creation1
-				(Operation.WSTR,
-				Operande.creationOpChaine
-				(a.getFils2().getChaine())));
+				String s = b.getFils2().getChaine();
+
+	Prog.ajouter(Inst.creation1(Operation.WSTR,
+	Operande.creationOpChaine(s)));
+
 				break;
+				
+				case Real:
+				// coder_EXP(temp.getFils2(),ry);
+				Prog.ajouter(Inst.creation0
+				(Operation.WFLOAT));
+				break;
+				
+				case Interval:
+				// coder_EXP(temp.getFils2(),ry);
+				Prog.ajouter(Inst.creation0
+				(Operation.WINT));
+				break;		
+			}
 			
-				default: break;
-      			}
+			b = b.getFils1();
 		}
 	}
 	
