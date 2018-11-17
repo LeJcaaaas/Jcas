@@ -12,9 +12,10 @@ class Generation
 {
 	private ArrayList<String> idfs = new ArrayList<String>();
 	
-	private Registre rx = Registre.R0;
-	private Registre ry = Registre.R1;
-	private Registre rz = Registre.R2;
+	private Registre rx = null;
+	private Registre ry = null;
+	private Registre rz = null;
+	
 	
 	static Prog coder(Arbre a)
 	{
@@ -43,9 +44,9 @@ class Generation
 		{
 			case Vide: break;
 			
-			case ListeDecl: 
-				coder_DECL(a.getFils2());
+			case ListeDecl:
 				coder_LISTE_DECL(a.getFils1());
+				coder_DECL(a.getFils2());
 				break;
 
 			default: break;
@@ -67,7 +68,8 @@ class Generation
 				
 			case ListeIdent:
 				int n = coder_LISTE_IDF(a.getFils1());
-				idfs.add(a.getFils2().getChaine());
+				String s = a.getFils2().getChaine();
+				idfs.add(s);
 				return (n+1);
 		}
 		
@@ -82,9 +84,9 @@ class Generation
 		{
 			case Vide: break;
 			
-			case ListeInst: 
-				coder_INST(a.getFils2());
+			case ListeInst:
 				coder_LISTE_INST(a.getFils1());
+				coder_INST(a.getFils2());
 				break;
 
 			default: break;
@@ -138,48 +140,152 @@ class Generation
 		Prog.ajouter(finsi);
 	}
 	
-	private void coder_AFFECT(Arbre a)	{}
+	private void coder_AFFECT(Arbre a)
+	{
+		int n = coder_PLACE(a.getFils1());
+		coder_EXP(a.getFils2(),Registre.R0);
+		
+		Inst move = Inst.creation2(Operation.STORE,Operande.R0,
+		Operande.creationOpIndirect(n, Registre.GB));
+		
+		Prog.ajouter(move);
+	}
 	
 	private void coder_READ(Arbre a)
 	{
-	
+		NatureType natureExp = a.getFils1()
+		.getDecor().getType().getNature();
+		
+		int n = coder_PLACE(a.getFils1());
+		
+		if (n < 0) return;
+		
+		Inst read;
+		Inst move;
+		
+		switch (natureExp)
+		{
+			case Interval:
+			read = Inst.creation0(Operation.RINT);
+			break;
+			
+			case Real:
+			read = Inst.creation0(Operation.RFLOAT);
+			break;
+			
+			default: return;
+		}
+		
+		move = Inst.creation2(Operation.STORE,Operande.R1,
+		Operande.creationOpIndirect(n,Registre.GB)
+		);
+			
+		Prog.ajouter(read);
+		Prog.ajouter(move);
 	}
 	
 	private void coder_WRITE(Arbre a)
 	{
-		Arbre b = a.getFils1();
-		
-		if (b.getNoeud() != Noeud.ListeExp) return;
-		
-		while (b.getNoeud() != Noeud.Vide)
+		coder_LISTE_EXP(a.getFils1());
+	}
+	
+	private void coder_LISTE_EXP(Arbre a)
+	{
+		switch (a.getNoeud())
 		{
-			NatureType natureExp = b.getFils2()
-			.getDecor().getType().getNature();
+			case Vide: break;
 			
-			switch (natureExp)
-			{
-				case String:
-				String s = b.getFils2().getChaine();
-
-	Prog.ajouter(Inst.creation1(Operation.WSTR,
-	Operande.creationOpChaine(s)));
-
+			case ListeExp:
+				coder_LISTE_EXP(a.getFils1());
+				coder_SHOW(a.getFils2());
 				break;
-				
-				case Real:
-				// coder_EXP(temp.getFils2(),ry);
-				Prog.ajouter(Inst.creation0
-				(Operation.WFLOAT));
-				break;
-				
-				case Interval:
-				// coder_EXP(temp.getFils2(),ry);
-				Prog.ajouter(Inst.creation0
-				(Operation.WINT));
-				break;		
-			}
+
+			default: break;
+		}
+	}
+	
+	private void coder_SHOW(Arbre a)
+	{
+		NatureType natureExp = a.getDecor().
+		getType().getNature();
 			
-			b = b.getFils1();
+		switch (natureExp)
+		{
+			case String:
+			String s = a.getChaine();
+			Prog.ajouter(Inst.creation1(Operation.WSTR,
+			Operande.creationOpChaine(s)));
+			break;
+				
+			case Real:
+			coder_EXP(a,Registre.R1);
+			Prog.ajouter(Inst.creation0
+			(Operation.WFLOAT));
+			break;
+				
+			case Interval:
+			coder_EXP(a,Registre.R1);
+			Prog.ajouter(Inst.creation0
+			(Operation.WINT));
+			break;		
+		}
+	}
+	
+	private int coder_PLACE(Arbre a)
+	{
+		String s = a.getChaine();
+		return idfs.indexOf(s)+1;
+	}
+	
+	private void coder_EXP(Arbre a, Registre r)
+	{
+		Inst exp;
+		Operande x,y;
+		
+		switch (a.getNoeud())
+		{
+			case Et:	break;
+			case Ou: 	break;
+			case Egal: 	break;
+			case InfEgal:	break;
+			case SupEgal: 	break;
+			case NonEgal: 	break;
+			case Inf: 	break;
+			case Sup: 	break;
+			case Plus:	break;			
+			case Moins: 	break;
+			case Mult: 	break;
+			case DivReel: 	break;
+			case Reste: 	break;
+			case Quotient:	break;
+
+			case Non:		break;
+			case PlusUnaire:	break;
+			case MoinsUnaire:	break;
+			
+			case Index:	break;
+			
+			case Ident:
+			int n = coder_PLACE(a);
+			y = Operande.opDirect(r);
+			x = Operande.creationOpIndirect(n,Registre.GB);
+			exp = Inst.creation2(Operation.LOAD,x,y);
+			Prog.ajouter(exp);
+			break;
+			
+			case Entier:
+			y = Operande.opDirect(r);
+			x = Operande.creationOpEntier(a.getEntier());
+			exp = Inst.creation2(Operation.LOAD,x,y);
+			Prog.ajouter(exp);
+			break;
+			
+			case Reel:
+			y = Operande.opDirect(r);
+			x = Operande.creationOpReel(a.getReel());
+			exp = Inst.creation2(Operation.LOAD,x,y);
+			Prog.ajouter(exp);
+			break;
 		}
 	}
 	
@@ -188,7 +294,37 @@ class Generation
 		Prog.ajouter(Inst.creation0(Operation.WNL));
 	}
 	
-	private void coder_NOP(Arbre a) {}	
+	private void coder_NOP(Arbre a) {}
+	
+	private void coder_EXP_TWO(Arbre a, Registre r)
+	{
+		Registre rx = null; // Registres.allouer();
+		Registre ry = null; // Registres.allouer();
+				
+		coder_EXP(a.getFils1(),rx);
+		coder_EXP(a.getFils2(),ry);
+		
+		Operation op = null;
+		
+		switch (a.getNoeud())
+		{
+			case Plus:	op = Operation.ADD; break;
+			case Moins: 	op = Operation.SUB; break;
+			case Mult: 	op = Operation.MUL; break;
+			case DivReel: 	op = Operation.DIV; break;
+			case Reste: 	op = Operation.MOD; break;
+			case Quotient:	op = Operation.DIV; break;
+		}
+		
+	Prog.ajouter(Inst.creation2(op,
+	Operande.opDirect(rx),Operande.opDirect(ry)));
+	
+	Prog.ajouter(Inst.creation2(Operation.STORE,
+	Operande.opDirect(rx),Operande.opDirect(r)));
+	
+		// Registres.liberer(rx);
+		// Registres.liberer(ry);
+	}
 }
 
 

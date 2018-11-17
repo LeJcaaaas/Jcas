@@ -1,7 +1,8 @@
 program
    a : integer;
 begin
-   write("Hello I am your doom");
+   read(a);
+   write(a);
    new_line;
 end.
 

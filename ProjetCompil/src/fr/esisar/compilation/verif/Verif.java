@@ -194,7 +194,7 @@ public class Verif {
    			break;
    			
    		case Lecture:
-   			verifier_LISTE_EXP(a.getFils1());
+   			verifier_PLACE(a.getFils1());
    			verifier_READ(a.getFils1());
    			break;
 
@@ -214,8 +214,7 @@ public class Verif {
    
    private void verifier_READ(Arbre a) throws ErreurVerif
    {
-   	verifier_PLACE(a.getFils1());
-	Type t = a.getFils1().getDecor().getType();
+	Type t = a.getDecor().getType();
 	if (!(t instanceof TypeInterval) && t != Type.Real)
 	{
 		ErreurContext e = ErreurContext.TypeError;
