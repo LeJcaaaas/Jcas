@@ -2,6 +2,7 @@ program
    a : integer;
 begin
    read(a);
+   a := a+1;
    write(a);
    new_line;
 end.

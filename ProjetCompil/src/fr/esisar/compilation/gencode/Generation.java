@@ -143,11 +143,18 @@ class Generation
 	private void coder_AFFECT(Arbre a)
 	{
 		int n = coder_PLACE(a.getFils1());
-		coder_EXP(a.getFils2(),Registre.R0);
+		coder_EXP(a.getFils2());
 		
-		Inst move = Inst.creation2(Operation.STORE,Operande.R0,
-		Operande.creationOpIndirect(n, Registre.GB));
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0);
 		
+		Inst move = Inst.creation2
+		(
+			Operation.STORE,
+			Operande.R0,
+			Operande.creationOpIndirect(n, Registre.GB)
+		);
+		
+		Prog.ajouter(pop);
 		Prog.ajouter(move);
 	}
 	
@@ -177,8 +184,7 @@ class Generation
 		}
 		
 		move = Inst.creation2(Operation.STORE,Operande.R1,
-		Operande.creationOpIndirect(n,Registre.GB)
-		);
+		Operande.creationOpIndirect(n,Registre.GB));
 			
 		Prog.ajouter(read);
 		Prog.ajouter(move);
@@ -218,13 +224,17 @@ class Generation
 			break;
 				
 			case Real:
-			coder_EXP(a,Registre.R1);
+			coder_EXP(a);
+			Prog.ajouter(Inst.creation1
+			(Operation.POP,Operande.R1));
 			Prog.ajouter(Inst.creation0
 			(Operation.WFLOAT));
 			break;
 				
 			case Interval:
-			coder_EXP(a,Registre.R1);
+			coder_EXP(a);
+			Prog.ajouter(Inst.creation1
+			(Operation.POP,Operande.R1));
 			Prog.ajouter(Inst.creation0
 			(Operation.WINT));
 			break;		
@@ -237,9 +247,9 @@ class Generation
 		return idfs.indexOf(s)+1;
 	}
 	
-	private void coder_EXP(Arbre a, Registre r)
+	private void coder_EXP(Arbre a)
 	{
-		Inst exp;
+		Inst e1,e2,e3;
 		Operande x,y;
 		
 		switch (a.getNoeud())
@@ -252,12 +262,6 @@ class Generation
 			case NonEgal: 	break;
 			case Inf: 	break;
 			case Sup: 	break;
-			case Plus:	break;			
-			case Moins: 	break;
-			case Mult: 	break;
-			case DivReel: 	break;
-			case Reste: 	break;
-			case Quotient:	break;
 
 			case Non:		break;
 			case PlusUnaire:	break;
@@ -265,26 +269,128 @@ class Generation
 			
 			case Index:	break;
 			
+			case Reste:
+			x = Operande.opDirect(Registre.R2);
+			y = Operande.opDirect(Registre.R3);
+			
+			coder_EXP(a.getFils1());
+			e1 = Inst.creation1(Operation.POP,x);
+			Prog.ajouter(e1);
+			
+			coder_EXP(a.getFils2());
+			e2 = Inst.creation1(Operation.POP,y);
+			Prog.ajouter(e2);
+			
+			e1 = Inst.creation2(Operation.MOD,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);		
+			break;
+			
+			case Quotient:
+			case DivReel:
+			x = Operande.opDirect(Registre.R2);
+			y = Operande.opDirect(Registre.R3);
+			
+			coder_EXP(a.getFils1());
+			e1 = Inst.creation1(Operation.POP,x);
+			Prog.ajouter(e1);
+			
+			coder_EXP(a.getFils2());
+			e2 = Inst.creation1(Operation.POP,y);
+			Prog.ajouter(e2);
+			
+			e1 = Inst.creation2(Operation.DIV,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);		
+			break;
+			
+			case Mult:
+			x = Operande.opDirect(Registre.R2);
+			y = Operande.opDirect(Registre.R3);
+			
+			coder_EXP(a.getFils1());
+			e1 = Inst.creation1(Operation.POP,x);
+			Prog.ajouter(e1);
+			
+			coder_EXP(a.getFils2());
+			e2 = Inst.creation1(Operation.POP,y);
+			Prog.ajouter(e2);
+			
+			e1 = Inst.creation2(Operation.MUL,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);
+			break;
+			
+			case Moins:
+			x = Operande.opDirect(Registre.R2);
+			y = Operande.opDirect(Registre.R3);
+			
+			coder_EXP(a.getFils1());
+			e1 = Inst.creation1(Operation.POP,x);
+			Prog.ajouter(e1);
+			
+			coder_EXP(a.getFils2());
+			e2 = Inst.creation1(Operation.POP,y);
+			Prog.ajouter(e2);
+			
+			e1 = Inst.creation2(Operation.SUB,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);		
+			break;
+			
+			case Plus:
+			x = Operande.opDirect(Registre.R2);
+			y = Operande.opDirect(Registre.R3);
+			
+			coder_EXP(a.getFils1());
+			e1 = Inst.creation1(Operation.POP,x);
+			Prog.ajouter(e1);
+			
+			coder_EXP(a.getFils2());
+			e2 = Inst.creation1(Operation.POP,y);
+			Prog.ajouter(e2);
+			
+			e1 = Inst.creation2(Operation.ADD,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);
+			break;
+			
 			case Ident:
 			int n = coder_PLACE(a);
-			y = Operande.opDirect(r);
+			y = Operande.opDirect(Registre.R0);
 			x = Operande.creationOpIndirect(n,Registre.GB);
-			exp = Inst.creation2(Operation.LOAD,x,y);
-			Prog.ajouter(exp);
+			e1 = Inst.creation2(Operation.LOAD,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);
 			break;
 			
 			case Entier:
-			y = Operande.opDirect(r);
+			y = Operande.opDirect(Registre.R0);
 			x = Operande.creationOpEntier(a.getEntier());
-			exp = Inst.creation2(Operation.LOAD,x,y);
-			Prog.ajouter(exp);
+			e1 = Inst.creation2(Operation.LOAD,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);
 			break;
 			
 			case Reel:
-			y = Operande.opDirect(r);
+			y = Operande.opDirect(Registre.R0);
 			x = Operande.creationOpReel(a.getReel());
-			exp = Inst.creation2(Operation.LOAD,x,y);
-			Prog.ajouter(exp);
+			e1 = Inst.creation2(Operation.LOAD,x,y);
+			e2 = Inst.creation1(Operation.PUSH,y);
+			Prog.ajouter(e1);
+			Prog.ajouter(e2);
 			break;
 		}
 	}
@@ -295,36 +401,6 @@ class Generation
 	}
 	
 	private void coder_NOP(Arbre a) {}
-	
-	private void coder_EXP_TWO(Arbre a, Registre r)
-	{
-		Registre rx = null; // Registres.allouer();
-		Registre ry = null; // Registres.allouer();
-				
-		coder_EXP(a.getFils1(),rx);
-		coder_EXP(a.getFils2(),ry);
-		
-		Operation op = null;
-		
-		switch (a.getNoeud())
-		{
-			case Plus:	op = Operation.ADD; break;
-			case Moins: 	op = Operation.SUB; break;
-			case Mult: 	op = Operation.MUL; break;
-			case DivReel: 	op = Operation.DIV; break;
-			case Reste: 	op = Operation.MOD; break;
-			case Quotient:	op = Operation.DIV; break;
-		}
-		
-	Prog.ajouter(Inst.creation2(op,
-	Operande.opDirect(rx),Operande.opDirect(ry)));
-	
-	Prog.ajouter(Inst.creation2(Operation.STORE,
-	Operande.opDirect(rx),Operande.opDirect(r)));
-	
-		// Registres.liberer(rx);
-		// Registres.liberer(ry);
-	}
 }
 
 
