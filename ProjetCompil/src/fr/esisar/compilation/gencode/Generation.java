@@ -11,12 +11,7 @@ import java.util.ArrayList;
 class Generation
 {
 	private ArrayList<String> idfs = new ArrayList<String>();
-	
-	private Registre rx = null;
-	private Registre ry = null;
-	private Registre rz = null;
-	
-	
+		
 	static Prog coder(Arbre a)
 	{
 		Prog.ajouterGrosComment("JCAS Compilator");
@@ -113,31 +108,80 @@ class Generation
 		}
 	}
 	
-	private void coder_WHILE(Arbre a)	{}
+	private void coder_WHILE(Arbre a)
+	{
+		Etiq dedans = Etiq.nouvelle("while.l1");
+		Etiq dehors = Etiq.nouvelle("while.l2");
+		
+		// -- Definition des instructions a ajouter
+
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0);
+		
+		Inst cmp = Inst.creation2(Operation.CMP,
+                                Operande.creationOpEntier(1), 
+                                Operande.R0);
+
+		Inst bne = Inst.creation1(Operation.BNE, 
+				Operande.creationOpEtiq(dehors));
+		
+		Inst bra = Inst.creation1(Operation.BRA, 
+				Operande.creationOpEtiq(dedans));
+
+		// -- Ajout des instructions assembleur
+		
+		Prog.ajouter(dedans);
+
+		coder_EXP(a.getFils1());
+		
+		Prog.ajouter(pop);
+		Prog.ajouter(cmp);
+		Prog.ajouter(bne);
+		
+		coder_LISTE_INST(a.getFils2());
+		
+		Prog.ajouter(bra);
+		Prog.ajouter(dehors);
+		
+		
+	}
 	private void coder_FOR(Arbre a) 	{}
 
 	private void coder_IF(Arbre a)
 	{
-		Etiq faux = Etiq.nouvelle("faux");
-		Etiq finsi = Etiq.nouvelle("finsi");
+		Etiq ok = Etiq.nouvelle("if.l1");
+		Etiq ko = Etiq.nouvelle("if.l2");
+		Etiq vu = Etiq.nouvelle("if.l3");
 
-		// coder_EXP(a,rx);
-
-		Prog.ajouter(Inst.creation2(Operation.CMP,
+		// -- Definition des instructions a ajouter 
+		
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0);
+		
+		Inst cmp = Inst.creation2(Operation.CMP,
                                 Operande.creationOpEntier(1), 
-                                Operande.opDirect(rx)));
+                                Operande.R0);
 
-		Prog.ajouter(Inst.creation1(Operation.BNE, 
-				Operande.creationOpEtiq(faux)));
+		Inst bne = Inst.creation1(Operation.BNE, 
+				Operande.creationOpEtiq(ko));
+		
+		Inst bra = Inst.creation1(Operation.BRA, 
+				Operande.creationOpEtiq(vu));
+
+		// -- Ajout des instructions assembleur
+
+		coder_EXP(a.getFils1());		
+		Prog.ajouter(pop);
+		Prog.ajouter(cmp);
+		Prog.ajouter(bne);
+		Prog.ajouter(ok);
 
 		coder_LISTE_INST(a.getFils2());
 		
-		Prog.ajouter(Inst.creation1(Operation.BRA, 
-				Operande.creationOpEtiq(finsi)));
-		
-		Prog.ajouter(faux);		
+		Prog.ajouter(bra);
+		Prog.ajouter(ko);
+				
 		coder_LISTE_INST(a.getFils3());
-		Prog.ajouter(finsi);
+		
+		Prog.ajouter(vu);
 	}
 	
 	private void coder_AFFECT(Arbre a)
@@ -247,151 +291,123 @@ class Generation
 		return idfs.indexOf(s)+1;
 	}
 	
-	private void coder_EXP(Arbre a)
+	private void coder_OP_BINARY(Arbre a, Operation op)
 	{
-		Inst e1,e2,e3;
+		Inst e1,e2;
+		Operande x,y;
+
+		x = Operande.opDirect(Registre.R2);
+		y = Operande.opDirect(Registre.R3);
+
+		coder_EXP(a.getFils1());
+		e1 = Inst.creation1(Operation.POP,x);
+		Prog.ajouter(e1);
+			
+		coder_EXP(a.getFils2());
+		e2 = Inst.creation1(Operation.POP,y);
+		Prog.ajouter(e2);
+			
+		e1 = Inst.creation2(op,y,x);
+		e2 = Inst.creation1(Operation.PUSH,x);
+			
+		Prog.ajouter(e1);
+		Prog.ajouter(e2);
+	}
+	
+	private void coder_OP_FEUILLE(Arbre a)
+	{
+		Inst e1,e2;
 		Operande x,y;
 		
-		switch (a.getNoeud())
+		switch(a.getNoeud())
 		{
-			case Et:	break;
-			case Ou: 	break;
-			case Egal: 	break;
-			case InfEgal:	break;
-			case SupEgal: 	break;
-			case NonEgal: 	break;
-			case Inf: 	break;
-			case Sup: 	break;
-
-			case Non:		break;
-			case PlusUnaire:	break;
-			case MoinsUnaire:	break;
-			
-			case Index:	break;
-			
-			case Reste:
-			x = Operande.opDirect(Registre.R2);
-			y = Operande.opDirect(Registre.R3);
-			
-			coder_EXP(a.getFils1());
-			e1 = Inst.creation1(Operation.POP,x);
-			Prog.ajouter(e1);
-			
-			coder_EXP(a.getFils2());
-			e2 = Inst.creation1(Operation.POP,y);
-			Prog.ajouter(e2);
-			
-			e1 = Inst.creation2(Operation.MOD,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);		
-			break;
-			
-			case Quotient:
-			case DivReel:
-			x = Operande.opDirect(Registre.R2);
-			y = Operande.opDirect(Registre.R3);
-			
-			coder_EXP(a.getFils1());
-			e1 = Inst.creation1(Operation.POP,x);
-			Prog.ajouter(e1);
-			
-			coder_EXP(a.getFils2());
-			e2 = Inst.creation1(Operation.POP,y);
-			Prog.ajouter(e2);
-			
-			e1 = Inst.creation2(Operation.DIV,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);		
-			break;
-			
-			case Mult:
-			x = Operande.opDirect(Registre.R2);
-			y = Operande.opDirect(Registre.R3);
-			
-			coder_EXP(a.getFils1());
-			e1 = Inst.creation1(Operation.POP,x);
-			Prog.ajouter(e1);
-			
-			coder_EXP(a.getFils2());
-			e2 = Inst.creation1(Operation.POP,y);
-			Prog.ajouter(e2);
-			
-			e1 = Inst.creation2(Operation.MUL,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);
-			break;
-			
-			case Moins:
-			x = Operande.opDirect(Registre.R2);
-			y = Operande.opDirect(Registre.R3);
-			
-			coder_EXP(a.getFils1());
-			e1 = Inst.creation1(Operation.POP,x);
-			Prog.ajouter(e1);
-			
-			coder_EXP(a.getFils2());
-			e2 = Inst.creation1(Operation.POP,y);
-			Prog.ajouter(e2);
-			
-			e1 = Inst.creation2(Operation.SUB,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);		
-			break;
-			
-			case Plus:
-			x = Operande.opDirect(Registre.R2);
-			y = Operande.opDirect(Registre.R3);
-			
-			coder_EXP(a.getFils1());
-			e1 = Inst.creation1(Operation.POP,x);
-			Prog.ajouter(e1);
-			
-			coder_EXP(a.getFils2());
-			e2 = Inst.creation1(Operation.POP,y);
-			Prog.ajouter(e2);
-			
-			e1 = Inst.creation2(Operation.ADD,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);
-			break;
-			
 			case Ident:
 			int n = coder_PLACE(a);
-			y = Operande.opDirect(Registre.R0);
 			x = Operande.creationOpIndirect(n,Registre.GB);
-			e1 = Inst.creation2(Operation.LOAD,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);
 			break;
 			
 			case Entier:
-			y = Operande.opDirect(Registre.R0);
 			x = Operande.creationOpEntier(a.getEntier());
-			e1 = Inst.creation2(Operation.LOAD,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);
+			break;
+
+			case Reel:
+			x = Operande.creationOpReel(a.getReel());
 			break;
 			
-			case Reel:
-			y = Operande.opDirect(Registre.R0);
-			x = Operande.creationOpReel(a.getReel());
-			e1 = Inst.creation2(Operation.LOAD,x,y);
-			e2 = Inst.creation1(Operation.PUSH,y);
-			Prog.ajouter(e1);
-			Prog.ajouter(e2);
-			break;
+			default: return;
+		}
+		
+		y = Operande.opDirect(Registre.R0);
+		
+		e1 = Inst.creation2(Operation.LOAD,x,y);
+		e2 = Inst.creation1(Operation.PUSH,y);
+		Prog.ajouter(e1);
+		Prog.ajouter(e2);
+	}
+	
+	private void coder_OP_BRANCH(Arbre a, Operation op)
+	{
+		Inst e1,e2,e3;
+		Operande x,y,z;
+
+		x = Operande.opDirect(Registre.R2);
+		y = Operande.opDirect(Registre.R3);
+
+		coder_EXP(a.getFils1());
+		e1 = Inst.creation1(Operation.POP,x);
+		Prog.ajouter(e1);
+			
+		coder_EXP(a.getFils2());
+		e2 = Inst.creation1(Operation.POP,y);
+		e3 = Inst.creation2(Operation.CMP,y,x);
+
+		Prog.ajouter(e2);
+		Prog.ajouter(e3);
+			
+		e1 = Inst.creation1(op,Operande.R0);
+		e2 = Inst.creation1(Operation.PUSH,Operande.R0);
+			
+		Prog.ajouter(e1);
+		Prog.ajouter(e2);
+	} 
+	
+	private void coder_EXP(Arbre a)
+	{
+		switch (a.getNoeud())
+		{
+		
+		// -- Operateurs logiques
+		case Et:	break;
+		case Ou: 	break;
+		case Non:	break;
+		
+		// -- Operateurs conditionnels
+		case Egal:    coder_OP_BRANCH(a,Operation.SEQ); break;
+		case NonEgal: coder_OP_BRANCH(a,Operation.SNE); break;
+		case InfEgal: coder_OP_BRANCH(a,Operation.SLE);	break;
+		case SupEgal: coder_OP_BRANCH(a,Operation.SGE); break;
+		case Inf:     coder_OP_BRANCH(a,Operation.SLT); break;
+		case Sup:     coder_OP_BRANCH(a,Operation.SGT); break;
+		
+		// -- Operateurs unaires
+		case PlusUnaire:	break;
+		case MoinsUnaire:	break;
+		
+		// -- Currently unsupported
+		case Index:	break;
+
+		// -- Operations binaires
+		case Quotient:
+		case DivReel: coder_OP_BINARY(a,Operation.DIV);	break;
+		case Reste:   coder_OP_BINARY(a,Operation.MOD);	break;
+		case Mult:    coder_OP_BINARY(a,Operation.MUL);	break;
+		case Moins:   coder_OP_BINARY(a,Operation.SUB);	break;
+		case Plus:    coder_OP_BINARY(a,Operation.ADD);	break;
+		
+		// -- Operations en feuille 
+		case Ident:
+		case Entier:
+		case Reel:	coder_OP_FEUILLE(a); break;
 		}
 	}
 	
