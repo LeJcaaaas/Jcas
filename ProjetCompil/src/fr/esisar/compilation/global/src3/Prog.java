@@ -119,13 +119,11 @@ public class Prog {
    /**
     * Ajoute le commentaire à la fin du programme, entouré de "-".
     */
-   public static void ajouterComment(String comment) {
-      int nbTirets = (70 - comment.length()) / 2;
+   public static void ajouterComment(String comment)
+   {
+      int nbTirets = (50 - comment.length()) / 2;
       for (int i = 0; i < nbTirets; i++) {
-         comment = "-" + comment + "-"; 
-      }
-      if (comment.length() < 70) {
-         comment = comment + "-"; 
+        comment = "-" + comment + "-"; 
       }
       ajouter(comment);
    }
@@ -134,16 +132,11 @@ public class Prog {
     * Ajoute le commentaire à la fin du programme, encadré de deux lignes 
     * de "-".
     */
-   public static void ajouterGrosComment(String comment) {
-      String ligneTirets = 
-      "----------------------------------------------------------------------";
-      ajouterComment(ligneTirets);
-      int nbEsp = (70 - comment.length()) / 2;
-      for (int i = 0; i < nbEsp; i++) {
-         comment = " " + comment;
-      }
+   public static void ajouterGrosComment(String comment)
+   {
+      ajouterComment("");
       ajouterComment(comment);
-      ajouterComment(ligneTirets);
+      ajouterComment("");
    }
 
    /**

@@ -14,7 +14,7 @@ class Generation
 		
 	static Prog coder(Arbre a)
 	{
-		Prog.ajouterGrosComment("JCAS Compilator");
+		Prog.ajouterGrosComment(" JCAS Compilator ");
       
 		Generation g = new Generation();
 
@@ -110,6 +110,8 @@ class Generation
 	
 	private void coder_WHILE(Arbre a)
 	{
+		int p = a.getNumLigne();
+		Prog.ajouterComment(" WHILE ligne "+p+" ");
 		Etiq dedans = Etiq.nouvelle("while.l1");
 		Etiq dehors = Etiq.nouvelle("while.l2");
 		
@@ -148,6 +150,9 @@ class Generation
 
 	private void coder_IF(Arbre a)
 	{
+		int p = a.getNumLigne();
+		Prog.ajouterComment(" IF ligne "+p+" ");
+		
 		Etiq ok = Etiq.nouvelle("if.l1");
 		Etiq ko = Etiq.nouvelle("if.l2");
 		Etiq vu = Etiq.nouvelle("if.l3");
@@ -186,6 +191,9 @@ class Generation
 	
 	private void coder_AFFECT(Arbre a)
 	{
+		int p = a.getNumLigne();
+		Prog.ajouterComment(" AFFECT ligne "+p+" ");
+		
 		int n = coder_PLACE(a.getFils1());
 		coder_EXP(a.getFils2());
 		
@@ -204,6 +212,9 @@ class Generation
 	
 	private void coder_READ(Arbre a)
 	{
+		int p = a.getNumLigne();
+		Prog.ajouterComment(" READ ligne "+p+" ");
+		
 		NatureType natureExp = a.getFils1()
 		.getDecor().getType().getNature();
 		
@@ -236,6 +247,9 @@ class Generation
 	
 	private void coder_WRITE(Arbre a)
 	{
+		int p = a.getNumLigne();
+		Prog.ajouterComment(" WRITE ligne "+p+" ");
+		
 		coder_LISTE_EXP(a.getFils1());
 	}
 	
