@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>readMe.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="projet-compilation-du-jcas-cs444-2018groupe-n--t.-bellanger-r.-jarry-f.-sauger-j.-thomas"># Projet Compilation du JCAS (CS444 2018)<br>
+Groupe N : T. Bellanger, R. Jarry, F. Sauger, J. Thomas</h2>
+<h2 id="structure-du-projet">0. Structure du projet</h2>
+<p>Le projet se décompose en deux programmes : un compilateur, dont le code a été partiellement fourni, et un générateur de programmes jcas.</p>
+<p>Ce générateur a été pensé pour pouvoir générer des programmes simples, syntaxiquement corrects, afin d’étudier le fonctionnement des analyses lexicales et syntaxiques du compilateur.</p>
+<p>Le compilateur quant à lui est composé d’une série de classes Java, interagissant avec des scripts shell et des fichiers de description de la grammaire et du lexique, respectivement <code>syntax.cup</code> et <code>lexical.flex</code>. Ces fichiers, complétés au cours de la passe 1, sont documentés par leur spécification disponible sur la plate-forme Chamilo, et leur étude a été consignée dans <code>lexical.doc.md</code> et <code>syntaxe.doc.md</code>, dans le même répertoire.</p>
+<p>Dans la passe 2, nous nous intéressons à la décoration de l’arbre abstrait généré à l’étape précédente, ainsi qu’à sa correction sémantique. Nous complétons à cet effet les fichiers <code>Verif.java</code>, <code>ErreurContext.java</code>, <code>ReglesTypage.java</code> et <code>ErreurReglesTypage.java</code> dans le répertoire correspondant.</p>
+<p>Dans la passe 3, l’objectif est de transcrire un programme .jcas en instructions compréhensibles pour la machine abstraite. Cette transcription se fait via le fichier <code>Generation.java</code>. Elle est divisée en deux parties: on s’occupe tout d’abord de la déclaration des variables, puis des instructions.</p>
+<h2 id="fonctionnement-des-programmes">0.1. Fonctionnement des programmes</h2>
+<p>Pour créer de nouveaux fichiers de test (si besoin) :</p>
+<pre class=" language-bash"><code class="prism  language-bash">java -jar jcasGenerator/jcasGenerator.final.jar
+</code></pre>
+<p>Pour compiler le programme de compilation jcas :</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">chmod</span> -R u+x ProjetCompil/
+
+<span class="token function">cd</span> ProjetCompil/src/fr/esisar/compilation/syntaxe/	<span class="token comment"># Passe 1</span>
+<span class="token function">cd</span> ProjetCompil/src/fr/esisar/compilation/verif/	<span class="token comment"># Passe 2</span>
+<span class="token function">cd</span> ProjetCompil/src/fr/esisar/compilation/gencode/  <span class="token comment"># Passe 3</span>
+
+./compil.sh
+</code></pre>
+<p>Pour lancer les analyses lexicales et syntaxiques sur les programmes de test :</p>
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token function">cd</span> ProjetCompil/test/lexico/
+
+./lexico.sh
+
+<span class="token function">cd</span> ProjetCompil/test/syntaxe/
+
+./syntaxe.sh
+</code></pre>
+<h2 id="documentation-passe-1">1. Documentation Passe 1</h2>
+<h3 id="lexicale--les--opérateurs">Lexicale : Les  Opérateurs</h3>
+<ul>
+<li>Pour chaque opérateur défini dans le langage Jcas par la chaîne correspondante,<br>
+on renvoie le lexeme correspondant, qui existe déjà dans la table des symboles.</li>
+</ul>
+<h4 id="exemple-de-code-">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token string">"&lt;="</span> <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>sym<span class="token punctuation">.</span>INF_EGAL<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+</code></pre>
+<h3 id="lexicale-lexèmes-spécifiques">Lexicale: Lexèmes Spécifiques</h3>
+<ul>
+<li>Pour les lexèmes IDF, constante entiere, constante reelle, constante chaine<br>
+et commentaire, on doit effectuer une action plus spécifique.</li>
+</ul>
+<h4 id="exemple-de-code--1">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token punctuation">{</span>IDF<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>dictionnaire<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">!=</span>null<span class="token punctuation">)</span>
+	  <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>dictionnaire<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+
+	<span class="token keyword">else</span> <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token function">symbol</span><span class="token punctuation">(</span>sym<span class="token punctuation">.</span>IDF<span class="token punctuation">,</span> <span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="idf">IDF</h4>
+<ul>
+<li>Pour IDF, qui correspond a un identificateur, on regarde s’il existe une<br>
+entrée correspondante dans le dictionnaire qui implémente la table des symboles.<br>
+Si oui on renvoie les informations contenues dans la table des symboles,<br>
+sinon l’on ajoute a la table des symboles.</li>
+</ul>
+<h4 id="const_ent">CONST_ENT</h4>
+<ul>
+<li>Pour une constante entière, on vérifie le format du lexème, s’il s’agit bien<br>
+d’un entier on renvoie sa valeur, sinon on remonte une erreur lexicale.</li>
+</ul>
+<h4 id="const_reel">CONST_REEL</h4>
+<ul>
+<li>Pour une constante réelle, on verifie le format du lexème, s’il s’agit bien<br>
+d’un entier on renvoie sa valeur, sinon on remonte une erreur lexicale.</li>
+</ul>
+<h4 id="const_chaine">CONST_CHAINE</h4>
+<ul>
+<li>Pour une constante chaine, on renvoie directement le contenu du lexeme.</li>
+</ul>
+<h4 id="commentaire">COMMENTAIRE</h4>
+<ul>
+<li>Dans le cas d’un commentaire, l’action consiste a ne rien faire.</li>
+</ul>
+<h4 id="cas-derreur">Cas d’erreur</h4>
+<ul>
+<li>Le dernier cas correspond au cas ou le lexème n’a pas été reconnu, dans ce<br>
+cas on renvoie une erreur lexicale.</li>
+</ul>
+<h4 id="exemple-de-code--2">Exemple de code :</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token punctuation">.</span><span class="token punctuation">{</span>
+	System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Erreur Lexicale : '"</span> <span class="token operator">+</span>
+		<span class="token function">yytext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"' non reconnu ... ligne "</span> <span class="token operator">+</span> <span class="token function">numLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ErreurLexicale</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="syntaxe--règles-de-construction-de-larbre-danalyse">Syntaxe : Règles de construction de l’arbre d’analyse</h3>
+<ul>
+<li>On définit chaque non terminal de la grammaire ainsi que les règles de dérivation. A partir de ces règles de dérivation on construit l’arbre d’analyse.</li>
+</ul>
+<h4 id="exemple-de-code--3">Exemple de code :</h4>
+<h4 id="définition-du-non-terminal">Définition du non terminal</h4>
+<pre class=" language-java"><code class="prism  language-java">liste_idf <span class="token operator">:</span><span class="token operator">:</span><span class="token operator">=</span> liste_idf<span class="token operator">:</span>a VIRGULE idf<span class="token operator">:</span>b <span class="token punctuation">{</span><span class="token operator">:</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">:</span><span class="token punctuation">}</span> <span class="token operator">|</span>  idf<span class="token operator">:</span>b <span class="token punctuation">{</span><span class="token operator">:</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">:</span><span class="token punctuation">}</span>
+</code></pre>
+<h4 id="création-du-noeud-dans-larbre">Création du noeud dans l’arbre</h4>
+<pre class=" language-java"><code class="prism  language-java">liste_idf<span class="token operator">:</span>a VIRGULE idf<span class="token operator">:</span>b
+   <span class="token punctuation">{</span><span class="token operator">:</span>
+      RESULT <span class="token operator">=</span> Arbre<span class="token punctuation">.</span><span class="token function">creation2</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>ListeIdent<span class="token punctuation">,</span>a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>b<span class="token punctuation">.</span><span class="token function">getNumLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token operator">:</span><span class="token punctuation">}</span>
+   <span class="token operator">|</span>  idf<span class="token operator">:</span>b
+   <span class="token punctuation">{</span><span class="token operator">:</span>
+      RESULT <span class="token operator">=</span> Arbre<span class="token punctuation">.</span><span class="token function">creation2</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>ListeIdent<span class="token punctuation">,</span>
+      	Arbre<span class="token punctuation">.</span><span class="token function">creation0</span><span class="token punctuation">(</span>Noeud<span class="token punctuation">.</span>Vide<span class="token punctuation">,</span>parser<span class="token punctuation">.</span><span class="token function">numLigne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>b<span class="token punctuation">,</span>bleft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token operator">:</span><span class="token punctuation">}</span>
+   <span class="token punctuation">;</span>
+</code></pre>
+<h2 id="documentation-passe-2">2. Documentation Passe 2</h2>
+<h3 id="les-règles-de-typage">2.1 Les Règles de Typage</h3>
+<p><strong>Il existe 3 cas dans lesquels on peut, et on doit, appliquer les règles de typages.</strong></p>
+<h4 id="premier-cas--laffectation">Premier cas : l’affectation</h4>
+<p>La vérification de l’affectation est simple</p>
+<ul>
+<li>On ne peut affecter aux variables de type <em>boolean</em> que des <em>boolean</em></li>
+<li>On ne peut affecter aux variables de type <em>integer</em> que des <em>integer</em></li>
+<li>On peut affecter aux variables de type <em>real</em> des <em>integer</em> ou des <em>real</em></li>
+<li>On peut affecter à un <em>array</em> un autre <em>array</em> qu’un <em>array</em> de même dimension et sur le même type. Cela se fait par appel récursif sur les premiers éléments des deux <em>array</em></li>
+</ul>
+<h4 id="second-cas--opération-binaire">Second cas : Opération binaire</h4>
+<p>Le cas de l’opération binaire est assez similaire au cas de l’affectation</p>
+<ul>
+<li>Les <em>boolean</em> ne supportent que les opérations logiques avec un autre <em>boolean</em></li>
+<li>Les <em>integer</em> et les <em>real</em> ne supportent que les opérations arithmétiques avec des <em>real</em> et des <em>boolean</em></li>
+<li>Les éléments d’<em>array</em> supportent les opérations associées à leur type comme écrit ci-dessus</li>
+</ul>
+<h4 id="troisième-cas--opération-unaire">Troisième cas : Opération unaire</h4>
+<p>Le cas de l’opération unaire est simple</p>
+<ul>
+<li>Les opérateurs + et - peuvent être placés devant et seulement devant des <em>integer</em> et des <em>real</em></li>
+<li>L’opérateur <em>not</em> peut être placé devant et seulement devant un <em>boolean</em></li>
+</ul>
+<h3 id="la-classe-vérif">2.2 La classe Vérif</h3>
+<p><strong>La classe verif permet de réaliser la vérification et la décoration de l’arbre abstrait d’un programme Jcas.<br>
+La première étape consiste à initialiser l’environnement.</strong></p>
+<h4 id="initialiserenv">initialiserEnv</h4>
+<ul>
+<li>
+<p>La méthode <strong>initialiserEnv</strong> a pour rôle d’initialiser l’environnement du programme.<br>
+Pour ce faire elle crée un environnement vide auquel elle ajoute les types <em>integer</em>, <em>string</em>, <em>real</em> et <em>boolean</em> ainsi que les identifiants réservés <em>true</em>, <em>false</em> et <em>max_int</em>.</p>
+</li>
+<li>
+<p>La vérification du programme se fait ensuite en deux parties, la vérification des déclarations et la vérification des instructions.</p>
+</li>
+</ul>
+<h4 id="vérification-des-déclarations-vérifier_liste_decl">Vérification des déclarations: vérifier_LISTE_DECL</h4>
+<ul>
+<li>La méthode <strong>verifier_LISTE_DECL</strong> vérifie récursivement que chaque déclaration de la liste et remonte une erreur si elle rencontre une déclaration erronée. Pour cela elle fait appel à la méthode <strong>verifier_DECL</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</li>
+</ul>
+<h4 id="vérification-des-déclarations-vérifier-decl">Vérification des déclarations: vérifier DECL</h4>
+<ul>
+<li>La méthode <strong>verifier DECL verifie</strong> une déclaration en vérifiant son type et la liste des identifiants qui la constituent. Pour cela elle fait appel aux fonctions <strong>verifier_TYPE</strong> et <strong>verifier_LISTE_IDF</strong>.</li>
+</ul>
+<h4 id="vérification-des-déclarations-vérifier_liste_idf">Vérification des déclarations: vérifier_LISTE_IDF</h4>
+<ul>
+<li>La méthode <strong>verifier_LISTE_IDF</strong> vérifie récursivement chaque identifiant, si un identifiant est déjà présent dans l’environnement il s’agit d’une redéclaration et donc d’une erreur de contexte, qui est remontée, sinon chaque identifiant est ajouté à l’environnement. La décoration est ensuite ajoutée et l’identifiant résultant est à nouveau testé avec la fonction <strong>verifier_IDF</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_liste_inst">Vérification des instructions: vérifier_LISTE_INST</h4>
+<ul>
+<li>La méthode <strong>verifier_LISTE_INST</strong> vérifie récursivement chaque instruction pour savoir si elle est valide. Pour cela elle fait appel à la méthode <strong>verifier_INST</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_liste_exp">Vérification des instructions: vérifier_LISTE_EXP</h4>
+<ul>
+<li>La méthode <strong>verifier_LISTE_EXP</strong> vérifie récusrivement chaque expression pour savoir si elle est valide. Pour cela elle fait appel à la méthode <strong>verifier_EXP</strong> sur le premier élément de la liste et elle s’appelle elle-même sur le reste de la liste.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_inst">Vérification des instructions: vérifier_INST</h4>
+<ul>
+<li>La méthode <strong>verifier_INST</strong> vérifie la vaildité de l’instruction au cas par cas parmis toutes les instructions possibles en Jcas. <strong>verifier_INST</strong> fait appel aux fonctions spécifiques <strong>verifier_PAS</strong>, <strong>verifier_WRITE</strong>, <strong>verifier_READ</strong> et <strong>verifier_AFFECT</strong> pour chaque nœud qu’il est possible de rencontrer dans l’arbre.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_affect">Vérification des instructions: vérifier_AFFECT</h4>
+<ul>
+<li>La méthode <strong>verifier_AFFECT</strong> fait appel à la méthode <strong>verifier_PLACE</strong> pour obtenir le type de l’identifiant qui constitue le membre gauche de l’affectation et à <strong>verifier_EXP</strong> pour obtenir le type de l’expression qui constitue le membres droit de l’affectation. Ces appels permettent aussi de vérifier la validité des deux membres. La méthode applique ensuite les règles de compatibilité et remonte une erreur s’il y a lieu.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_exp">Vérification des instructions: vérifier_EXP</h4>
+<ul>
+<li>La méthode <strong>verifier_EXP</strong> applique les règles de compatibilité entre les types du langage Jcas.</li>
+</ul>
+<h4 id="vérification-des-instructions-vérifier_pas">Vérification des instructions: vérifier_PAS</h4>
+<ul>
+<li>La méthode <strong>verifier_PAS</strong> permet de vérifier la validité sémantique d’un identifiant et permet de décorer le nœud qui lui est attribué avec le bon type, soit entier soit matrice de dimension <em>n</em> de type <em>t</em>.</li>
+</ul>
+<h4 id="fonctions-communes-aux-2-parties-vérifier-_type">Fonctions communes aux 2 parties: vérifier _TYPE</h4>
+<ul>
+<li>La méthode <strong>verifier_TYPE</strong> se contente de regarder le type attribué au nœud et vérifie au cas par cas avec un appel à des fonctions plus spécifiques.</li>
+</ul>
+<h4 id="fonctions-communes-aux-2-parties-vérifier-_tableau">Fonctions communes aux 2 parties: vérifier _TABLEAU</h4>
+<ul>
+<li>La méthode vérifier tableau est légèrement plus complexe que les autres cas de base car il est possible d’avoir des tableau de tableau, de plus un tableau est construit par rapport à un autre type, il est donc nécessaire de faire appel faire appel à <strong>verifier_TYPE</strong> dans <strong>verifier_TABLEAU</strong>.</li>
+<li>Les autres fonctions appliquent des cas de base et ne nécessitent pas d’être détaillés.</li>
+</ul>
+<h2 id="documentation-passe-3">3. Documentation Passe 3</h2>
+<p>Le code pour la machine abstraite est généré par la méthode</p>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">static</span> Prog <span class="token function">coder</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<p>qui prend en paramètre l’arbre décoré construit dans la passe 2.</p>
+<h3 id="génération-de-code-pour-la-machine-abstraite-partie-déclarative">3.1. Génération de code pour la machine abstraite: Partie déclarative</h3>
+<p>Cette première partie est consacrée à la déclaration de toutes les variables au sein d’un programm Jcas, c’est-à-dire toutes les lignes de code avant l’instruction <strong>begin</strong>.</p>
+<h4 id="descriptions-des-méthodes-de-la-partie-déclarative">Descriptions des méthodes de la partie déclarative</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_LISTE_DECL</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Permet la génération du code machine abstraite pour allouer la mémoire nécessaire à la liste des variables déclarées. La méthode parcours la liste et alloue la mémoire pour chaque ligne déclarative.</li>
+</ul>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_DECL</span><span class="token punctuation">(</span>Arbre A<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Permet la génération du code pour une déclaration.</li>
+</ul>
+<h4 id="description-des-méthodes-de-la-partie-instructions">Description des méthodes de la partie instructions</h4>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_LISTE_INST</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Génère le code associé à une liste d’instruction. Il fait des appels à coder_INST pour chaque instruction dans la liste.</li>
+</ul>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_INST</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Génère le code associé à une instruction. Il appelle la méthode coder_X associé à l’instruction X.</li>
+</ul>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_WHILE</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_FOR</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Ces méthodes permettent de générer le code des boucles.</li>
+</ul>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_READ</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_WRITE</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Ces méthodes permettent de générer le code permettant d’interagir avec la console.</li>
+</ul>
+<pre class=" language-java"><code class="prism  language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">coder_AFFECT</span><span class="token punctuation">(</span>Arbre a<span class="token punctuation">)</span>
+</code></pre>
+<ul>
+<li>Cette méthode permet de générer le code d’affectation.</li>
+</ul>
+</div>
+</body>
+
+</html>
+
