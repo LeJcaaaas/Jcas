@@ -249,10 +249,21 @@ public class Verif {
 	verifier_PLACE(a.getFils1());
 	verifier_EXP(a.getFils2());
 	
-	Type t1 = a.getFils1().getDecor().getType();
-	Type t2 = a.getFils2().getDecor().getType();
+	Type t1 = null;
+	Type t2 = null;
+
+	if (a.getFils1() != null)
+	t1 = a.getFils1().getDecor().getType();
+	else return;
+	
+	if (a.getFils2() != null)
+	t1 = a.getFils2().getDecor().getType();
+	else return;
 
 	ResultatAffectCompatible r;
+	
+	if ((t1 != null) && (t2 != null))
+	{
 	r = ReglesTypage.affectCompatible(t1,t2);
 
 	if(r.getOk())
@@ -275,6 +286,7 @@ public class Verif {
 		ErreurContext e = ErreurContext.TypeError;
 		String m = t1.toString() + " != " + t2.toString();
 		e.leverErreurContext(m,a.getNumLigne());
+	}
 	}
    }
    
@@ -376,41 +388,8 @@ public class Verif {
    			verifier_IDF(a,NatureDefn.Var);
    			break;
    		
-   		case Index:
-   			Arbre b = a.getFils1();
-   			Arbre c = a.getFils2();
-   			verifier_PLACE(b);
-
-   			Type t1 = b.getDecor().getType();
-   			Type t2 = c.getDecor().getType();
-   			
-   			if (!(t1 instanceof TypeArray))
-   			{
-			    ErreurContext e = ErreurContext.IndexError;
-			    String m = t1.toString();
-			    m += ": n'est pas indexable";
-			    e.leverErreurContext(m,a.getNumLigne());
-   			}
-   			
-   			Type elm = (TypeArray)(t1).getElement();
-   			a.setDecor(new Decor(elm));
-
-   			verifier_EXP(c);
-   			
-   			if (!(t2 instanceof TypeInterval))
-   			{
-			    ErreurContext e = ErreurContext.IndexError;
-			    String m = t2.toString();
-			    m += ": n'est pas indexable";
-			    e.leverErreurContext(m,a.getNumLigne());
-   			}
-   			
-   			break;
-   			
-		default:
-   			String msg = "verifier_PLACE incorrect: ";
-   			msg += a.getNumLigne();
-			throw new ErreurInterneVerif(msg);
+   		case Index:	break;
+   		default:	break;
    	}
    }
    
@@ -504,10 +483,13 @@ public class Verif {
 			a.setDecor(new Decor(def,def.getType()));
 			break;
 		
-		default:
-   			String msg = "verifier_FACT incorrect: ";
-   			msg += a.getNumLigne();
-			throw new ErreurInterneVerif(msg);	
+		case Index:	break;
+		default:	break;
+		
+//		default:
+//   			String msg = "verifier_FACT incorrect: ligne ";
+//   			msg += a.getNumLigne();
+//			throw new ErreurInterneVerif(msg);	
 	}
    }
 

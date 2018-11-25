@@ -1,0 +1,60 @@
+; --------------------------------------------------
+; ---------------- JCAS Compilator ----------------
+; --------------------------------------------------
+   ADDSP #2 
+; ----------------- WRITE ligne 5 -----------------
+   WSTR """Entrer un entier : """ 
+; ------------------ READ ligne 7 ------------------
+   RINT 
+   STORE R1, 1(GB) 
+; ----------------- AFFECT ligne 9 -----------------
+   LOAD #1, R0 
+   PUSH R0 
+   POP R0 
+   STORE R0, 2(GB) 
+; ----------------- WHILE ligne 10 -----------------
+while.l1.1: 
+   LOAD 1(GB), R0 
+   PUSH R0 
+   POP R2 
+   LOAD #1, R0 
+   PUSH R0 
+   POP R3 
+   CMP R3, R2 
+   SGE R0 
+   PUSH R0 
+   POP R0 
+   CMP #1, R0 
+   BNE while.l2.2 
+; ---------------- AFFECT ligne 11 ----------------
+   LOAD 2(GB), R0 
+   PUSH R0 
+   POP R2 
+   LOAD 1(GB), R0 
+   PUSH R0 
+   POP R3 
+   MUL R3, R2 
+   PUSH R2 
+   POP R0 
+   STORE R0, 2(GB) 
+; ---------------- AFFECT ligne 12 ----------------
+   LOAD 1(GB), R0 
+   PUSH R0 
+   POP R2 
+   LOAD #1, R0 
+   PUSH R0 
+   POP R3 
+   SUB R3, R2 
+   PUSH R2 
+   POP R0 
+   STORE R0, 1(GB) 
+   BRA while.l1.1 
+while.l2.2: 
+; ----------------- WRITE ligne 15 -----------------
+   WSTR """factorielle = """ 
+   LOAD 2(GB), R0 
+   PUSH R0 
+   POP R1 
+   WINT 
+   WNL 
+   HALT 

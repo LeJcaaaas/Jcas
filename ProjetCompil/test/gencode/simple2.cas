@@ -1,9 +1,12 @@
 program
-   a : integer;
+   T : array [1 .. 20] of array [3 .. 5] of integer ;      -- Tableau d'entiers
+   i : 1 .. 20 ;    
+   a : integer;                     -- Indice de tableau
 begin
-   read(a);
-   a := a+1;
-   write(a);
+   for i := 1 to 20 do 
+      a := 2 * i ; 
+   end ; 
+   write(T[4]);
    new_line;
 end.
 

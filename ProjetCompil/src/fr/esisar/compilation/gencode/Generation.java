@@ -12,7 +12,8 @@ class Generation
 {
 	private ArrayList<String> idfs = new ArrayList<String>();
 		
-	static Prog coder(Arbre a) // - Transcrit l'arbre en instructions pour la machine abstraite
+	// - Transcrit l'arbre en instructions pour la machine abstraite
+	static Prog coder(Arbre a)
 	{
 		Prog.ajouterGrosComment(" JCAS Compilator ");
       
@@ -33,55 +34,106 @@ class Generation
    
 // --- 1. Initialisation de la machine (partie declaration)
 
-	private void coder_LISTE_DECL(Arbre a) // - Transcription d'une liste de déclaration
+	// - Transcription d'une liste de déclaration
+	private void coder_LISTE_DECL(Arbre a)
 	{
 		switch (a.getNoeud())
 		{
-			case Vide: break; // - Fin de la liste de déclaration
+			// - Fin de la liste de déclaration
+			case Vide: break;
 			
 			case ListeDecl:
-				coder_LISTE_DECL(a.getFils1()); // - Permet de passer à la déclaration suivante
-				coder_DECL(a.getFils2()); // - Transcrit la déclaration en code pour la machine abstraite
+			// - Permet de passer à la déclaration suivante
+				coder_LISTE_DECL(a.getFils1());
+				coder_DECL(a.getFils2());
 				break;
 
 			default: break;
 		}
 	}
 	
-	private void coder_DECL(Arbre a) // - Transcription d'une déclaration
-	{		
-		int n = coder_LISTE_IDF(a.getFils1()); // - Une déclaration est constituée d'une liste d'IDF
-		Operande nb_vars = Operande.creationOpEntier(n); // - Et d'un type
-		Prog.ajouter(Inst.creation1(Operation.ADDSP,nb_vars)); // - Ajoute la déclaration au programme
-	}
-	
-	private int coder_LISTE_IDF(Arbre a) // - Transcription d'une liste d'IDF
+	// - Transcription d'une déclaration
+	private void coder_DECL(Arbre a)
 	{
-		switch (a.getNoeud())
+		ArrayList<String> ids = coder_LISTE_IDF(a.getFils1());
+		int size = coder_TYPE(a.getFils2());
+		
+		String idname = new String();
+		
+		for (int i=0; i<ids.size(); i++)
 		{
-			case Vide: return 0; // - Fin de la liste d'IDF
-				
-			case ListeIdent:
-				int n = coder_LISTE_IDF(a.getFils1()); // - Permet de passer à l'IDF suivant
-				String s = a.getFils2().getChaine(); // - Transcrit l'IDF en chaîne pour la machine abstraite
-				idfs.add(s); // - Ajoute l'IDF au programme
-				return (n+1);
+			idname = ids.get(i);
+			
+			if (size == 1) idfs.add(idname); 
+
+			else
+			for(int j=0; j<size; j++)
+			idfs.add(idname+"."+j);
 		}
 		
-		return 0;
+		size = size * ids.size();
+		
+		Operande alloc = Operande.creationOpEntier(size);
+		Prog.ajouter(Inst.creation1(Operation.ADDSP,alloc));
+	}
+	
+	private ArrayList<String> coder_LISTE_IDF(Arbre a)
+	{
+		ArrayList<String> ls = new ArrayList<String>();
+		
+		switch (a.getNoeud())
+		{
+			case Vide: return ls;
+				
+			case ListeIdent:
+				ls = coder_LISTE_IDF(a.getFils1());
+				ls.add(a.getFils2().getChaine());
+				return (ls);
+		}
+		
+		return ls;
+	}
+	
+	private int coder_TYPE(Arbre a)
+	{
+		int x,y;
+	
+		switch (a.getNoeud())
+		{
+			case Tableau :
+			x = coder_TYPE(a.getFils1());
+			y = coder_TYPE(a.getFils2());
+			return (x*y);
+			
+			case Intervalle :
+			x = a.getFils1().getEntier();
+			y = a.getFils2().getEntier();
+			
+			if (x == y)	return 0;
+			else		return Math.abs(y-x)+1;
+			
+			case Ident :	return(1);
+
+			default: a.afficher(1);
+			return(42);
+		}
 	}
 	
 // --- 2. Operations sur la machine (partie instruction)
 
-	private void coder_LISTE_INST(Arbre a) // - Transcription d'une liste d'instruction
+	// - Transcription d'une liste d'instruction
+	private void coder_LISTE_INST(Arbre a)
 	{
 		switch (a.getNoeud())
 		{
-			case Vide: break; // - Fin de la liste d'instruction
+			// - Fin de la liste d'instructions
+			case Vide: break;
 			
 			case ListeInst:
-				coder_LISTE_INST(a.getFils1()); // - Permet de passer à l'instruction suivante
-				coder_INST(a.getFils2()); // - Transcrit l'instruction en code pour la machine abstraite
+				// - Passage à l'instruction suivante
+				coder_LISTE_INST(a.getFils1());
+				coder_INST(a.getFils2());
+				// - Codage de chaque instruction
 				break;
 
 			default: break;
@@ -108,38 +160,49 @@ class Generation
 		}
 	}
 	
-	private void coder_WHILE(Arbre a) // - Boucle WHILE
+	// - Boucle WHILE
+	private void coder_WHILE(Arbre a)
 	{
-		int p = a.getNumLigne(); // - Identifie le numéro de ligne de la boucle WHILE
+		int p = a.getNumLigne();
+		// - Identifie le numéro de ligne de la boucle WHILE
 		Prog.ajouterComment(" WHILE ligne "+p+" ");
-		Etiq dedans = Etiq.nouvelle("while.l1"); // - Permet d'identifier l'intérieur de la boucle
-		Etiq dehors = Etiq.nouvelle("while.l2"); // - Permet de sortir de la boucle
+		// - Permet d'identifier l'intérieur de la boucle
+		Etiq dedans = Etiq.nouvelle("while.l1");
+		// - Permet de sortir de la boucle
+		Etiq dehors = Etiq.nouvelle("while.l2");
 		
 		// -- Definition des instructions a ajouter
 
-		Inst pop = Inst.creation1(Operation.POP,Operande.R0); // - On place la variable à comparer dans R0
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0); 
+		// - On place la variable à comparer dans R0
 		
+		// - On compare R0 à 1 pour vérifier le test
 		Inst cmp = Inst.creation2(Operation.CMP,
                                 Operande.creationOpEntier(1), 
-                                Operande.R0); // - On compare R0 à 1 pour déterminer si le test est vrai
+                                Operande.R0); 
 
+		// - Si il est faux, on va à l'étiquette DEHORS
+		// (on sort de la boucle)
 		Inst bne = Inst.creation1(Operation.BNE, 
-				Operande.creationOpEtiq(dehors)); // - Si il est faux, on va à l'étiquette DEHORS, i.e. on sort de la boucle
+				Operande.creationOpEtiq(dehors));
 		
+		// - Sinon on reste DEDANS
 		Inst bra = Inst.creation1(Operation.BRA, 
-				Operande.creationOpEtiq(dedans)); // - Sinon on va à l'étiquette DEDANS, i.e. on refait un tour de boucle
+				Operande.creationOpEtiq(dedans));
 
 		// -- Ajout des instructions assembleur
 		
 		Prog.ajouter(dedans); // - Etiquette DEDANS
 
-		coder_EXP(a.getFils1()); // - On détermine la valeur de l'expression pour réaliser le test
+		// - Expression a tester
+		coder_EXP(a.getFils1());
 		
-		Prog.ajouter(pop); // - On met le résultat de l'expression dans un registre
-		Prog.ajouter(cmp); // - Et on le compare à 1
+		Prog.ajouter(pop); // - POP du resultat
+		Prog.ajouter(cmp); // - On le compare à 1
 		Prog.ajouter(bne); // - Si le test est faux, on sort
 		
-		coder_LISTE_INST(a.getFils2()); // - Sinon on exécute les instructions
+		// - Sinon on exécute les instructions
+		coder_LISTE_INST(a.getFils2());
 		
 		Prog.ajouter(bra); // - Et on refait le test.
 		Prog.ajouter(dehors); // - Etiquette DEHORS
@@ -150,12 +213,16 @@ class Generation
 
 	private void coder_IF(Arbre a) // - Instruction IF
 	{
-		int p = a.getNumLigne(); // - Identifie le numéro de ligne de l'instruction IF
+		int p = a.getNumLigne(); 
+		// - Identifie le numéro de ligne de l'instruction IF
 		Prog.ajouterComment(" IF ligne "+p+" ");
 		
-		Etiq ok = Etiq.nouvelle("if.l1"); // - Permet d'identifier le début des instructions si le test est VRAI
-		Etiq ko = Etiq.nouvelle("if.l2"); // - Permet d'identifier le début des instructions si le test est FAUX
-		Etiq vu = Etiq.nouvelle("if.l3"); // - Permet d'identifier la fin de l'instruction IF
+		Etiq ok = Etiq.nouvelle("if.l1");
+// - Permet d'identifier le début des instructions si le test est VRAI
+		Etiq ko = Etiq.nouvelle("if.l2");
+// - Permet d'identifier le début des instructions si le test est FAUX
+		Etiq vu = Etiq.nouvelle("if.l3");
+// - Permet d'identifier la fin de l'instruction IF
 
 		// -- Definition des instructions a ajouter 
 		
