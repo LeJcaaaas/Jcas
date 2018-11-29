@@ -218,60 +218,76 @@ class Generation
 		Prog.ajouterComment(" IF ligne "+p+" ");
 		
 		Etiq ok = Etiq.nouvelle("if.l1");
-// - Permet d'identifier le début des instructions si le test est VRAI
 		Etiq ko = Etiq.nouvelle("if.l2");
-// - Permet d'identifier le début des instructions si le test est FAUX
 		Etiq vu = Etiq.nouvelle("if.l3");
-// - Permet d'identifier la fin de l'instruction IF
+
+// - OK identifie le début des instructions si le test est VRAI
+// - KO identifie le début des instructions si le test est FAUX
+// - VU Permet d'identifier la fin de l'instruction IF
 
 		// -- Definition des instructions a ajouter 
 		
-		Inst pop = Inst.creation1(Operation.POP,Operande.R0); // - On place la variable à comparer dans R0
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0); 
+		// - On place la variable à comparer dans R0
 		
+		// - On compare R0 à 1 afin de vérifier le test
 		Inst cmp = Inst.creation2(Operation.CMP,
                                 Operande.creationOpEntier(1), 
-                                Operande.R0); // - On compare R0 à 1 afin de déterminer si le test est vrai
+                                Operande.R0); 
+               
 
+		// - Si il est faux, on va à l'étiquette KO
+		// - i.e. on exécute les instructions du ELSE
 		Inst bne = Inst.creation1(Operation.BNE, 
-				Operande.creationOpEtiq(ko)); // - Si il est faux, on va à l'étiquette KO, i.e. on exécute les instructions présentes dans ELSE
+				Operande.creationOpEtiq(ko));
 		
+		// - Sinon on execute celle du IF puis on va a VU,
+		// - i.e. on sort du branchement conditionnel
 		Inst bra = Inst.creation1(Operation.BRA, 
-				Operande.creationOpEtiq(vu)); // - Sinon, on exécute les instructions du IF, et on va à l'étiquette VU, i.e. on sort du test
+				Operande.creationOpEtiq(vu));
+				
+		
 		// -- Ajout des instructions assembleur
 
-		coder_EXP(a.getFils1()); // - On détermine la valeur de l'expression pour réaliser le test		
+		coder_EXP(a.getFils1());	
 
-		Prog.ajouter(pop); // - On met le résultat de l'expression dans un registre
-		Prog.ajouter(cmp); // - Et on le compare à 1
-		Prog.ajouter(bne); // - Si le test est faux, on passe au ELSE
-		Prog.ajouter(ok); // - Etiquette OK (non utilisée, permet de baliser le début des instructions si le test est vrai)
+		Prog.ajouter(pop);
+		Prog.ajouter(cmp);
+		Prog.ajouter(bne);
+		Prog.ajouter(ok);
 
-		coder_LISTE_INST(a.getFils2()); // - Instructions IF
+		coder_LISTE_INST(a.getFils2());	// - Instructions IF
 		
-		Prog.ajouter(bra); // - On va à la fin du programme pour ne pas exécuter les instructions ELSE
-		Prog.ajouter(ko); // - Etiquette KO
+		Prog.ajouter(bra);		// - Branchement VU
+		Prog.ajouter(ko);		// - Etiquette KO
 				
-		coder_LISTE_INST(a.getFils3()); // - Instructions ELSE
+		coder_LISTE_INST(a.getFils3());	// - Instructions ELSE
 		
-		Prog.ajouter(vu); // - Etiquette VU
+		Prog.ajouter(vu);		// - Etiquette VU
 	}
 	
-	private void coder_AFFECT(Arbre a) // - Instruction AFFECT
+	
+	private void coder_AFFECT(Arbre a)
 	{
-		int p = a.getNumLigne(); // - Identifie le début de l'instruction AFFECT
+		int p = a.getNumLigne(); 
+		// - Identifie le début de l'instruction AFFECT
 		Prog.ajouterComment(" AFFECT ligne "+p+" ");
-		
-		int n = coder_PLACE(a.getFils1()); // - Récupère l'emplacement mémoire de la variable que l'on affecte
-		coder_EXP(a.getFils2()); // On évalue l'expression et on la place dans la pile
-		
-		Inst pop = Inst.creation1(Operation.POP,Operande.R0); // On place le résultat de l'expression à affecter dans R0
+		// - Récupère l'emplacement mémoire de la variable
+		int n = coder_PLACE(a.getFils1()); 
+
+		coder_EXP(a.getFils2());
+		// On évalue l'expression et on la place dans la pile
+		Inst pop = Inst.creation1(Operation.POP,Operande.R0);
+		// On place le résultat de l'expression dans R0
 		
 		Inst move = Inst.creation2 
 		(
 			Operation.STORE,
 			Operande.R0,
 			Operande.creationOpIndirect(n, Registre.GB)
-		); // - On stocke le résultat dans l'espace mémoire de la variable que l'on affecte
+		);
+		
+// - On stocke le résultat dans l'espace de la variable à affecter
 		
 		Prog.ajouter(pop);
 		Prog.ajouter(move);
@@ -279,13 +295,16 @@ class Generation
 	
 	private void coder_READ(Arbre a) // - Instruction READ
 	{
-		int p = a.getNumLigne(); // - Identifie le début de l'instruction READ
+		int p = a.getNumLigne(); 
+		// - Identifie le début de l'instruction READ
 		Prog.ajouterComment(" READ ligne "+p+" ");
 		
 		NatureType natureExp = a.getFils1()
-		.getDecor().getType().getNature(); // - Récupère les informations sur la variable que l'on affecte
+		.getDecor().getType().getNature();
+		// - Récupère les informations de Nature
 		
-		int n = coder_PLACE(a.getFils1()); // - Récupère l'emplacement mémoire de la variable que l'on affecte
+		int n = coder_PLACE(a.getFils1()); 
+		// - Récupère l'emplacement mémoire de la variable
 		
 		if (n < 0) return;
 		
@@ -295,40 +314,50 @@ class Generation
 		switch (natureExp)
 		{
 			case Interval:
-			read = Inst.creation0(Operation.RINT); // - Si la variable à affecter est un entier
+			read = Inst.creation0(Operation.RINT);
+			// - Si la variable à affecter est un entier
 			break;
 			
 			case Real:
-			read = Inst.creation0(Operation.RFLOAT); // - Si la variable à affecter est un float 
+			read = Inst.creation0(Operation.RFLOAT);
+			// - Si la variable à affecter est un float 
 			break;
 			
 			default: return;
 		}
 		
 		move = Inst.creation2(Operation.STORE,Operande.R1,
-		Operande.creationOpIndirect(n,Registre.GB)); // - Stocke la valeur à affecter à l'emplacement mémoire de la variable que l'on affecte
+		Operande.creationOpIndirect(n,Registre.GB));
+		// - Stocke la valeur à affecter à l'emplacement
+		// - mémoire de la variable que l'on affecte
 			
 		Prog.ajouter(read);
 		Prog.ajouter(move);
 	}
 	
-	private void coder_WRITE(Arbre a) // - Instruction WRITE
+	// - Instruction WRITE
+	private void coder_WRITE(Arbre a)
 	{
-		int p = a.getNumLigne(); // - Identifie le début de l'instruction WRITE
+		int p = a.getNumLigne();
+		// - Identifie le début de l'instruction WRITE
 		Prog.ajouterComment(" WRITE ligne "+p+" ");
-		
-		coder_LISTE_EXP(a.getFils1()); // - Appel à coder_LISTE_EXP
+		coder_LISTE_EXP(a.getFils1());
+		// - Appel à coder_LISTE_EXP
 	}
-	
-	private void coder_LISTE_EXP(Arbre a) // - Permet, via la méthode coder_SHOW, d'afficher la liste d'expressions dans WRITE
+
+	// - Permet, via la méthode coder_SHOW
+	// - d'afficher la liste d'expressions dans WRITE	
+	private void coder_LISTE_EXP(Arbre a)
 	{
 		switch (a.getNoeud())
 		{
-			case Vide: break; // - Fin de la liste d'expressions
+			case Vide: break; 
+			// - Fin de la liste d'expressions
 			
 			case ListeExp:
-				coder_LISTE_EXP(a.getFils1()); // - Permet de lire l'expression suivante
-				coder_SHOW(a.getFils2()); // - Affiche l'expression courante
+				coder_LISTE_EXP(a.getFils1());
+				coder_SHOW(a.getFils2());
+				// - Affiche l'expression courante
 				break;
 
 			default: break;
@@ -366,43 +395,62 @@ class Generation
 		}
 	}
 	
-	private int coder_PLACE(Arbre a) // - Permet de récupérer l'emplacement mémoire d'une variable
+	// - Permet de récupérer l'emplacement mémoire d'une variable
+	private int coder_PLACE(Arbre a)
 	{
+		String suffix = "";
+		
+		while (a.getNoeud == Noeud.Index)
+		{
+			switch(a.getFils2().getNoeud())
+			{
+				case(Entier):	break;
+				case(Ident):	break;
+			}
+			a = a.getFils1();
+		}
 		String s = a.getChaine();
 		return idfs.indexOf(s)+1;
 	}
 	
-	private void coder_OP_BINARY(Arbre a, Operation op) // - Instruction OP_BINARY
+	
+	private void coder_OP_BINARY(Arbre a, Operation op) 
 	{
 		Inst e1,e2;
 		Operande x,y;
 
-		x = Operande.opDirect(Registre.R2); // - On place les opérandes dans les registres
+		x = Operande.opDirect(Registre.R2);
+		// - On place les opérandes dans les registres
 		y = Operande.opDirect(Registre.R3);
 
-		coder_EXP(a.getFils1()); // - On évalue la première expression
+		coder_EXP(a.getFils1());
+		// - On évalue la première expression
 		e1 = Inst.creation1(Operation.POP,x);
 		Prog.ajouter(e1);
 			
-		coder_EXP(a.getFils2()); // - Idem pour la deuxième expression
+		coder_EXP(a.getFils2());
+		// - Idem pour la deuxième expression
 		e2 = Inst.creation1(Operation.POP,y);
 		Prog.ajouter(e2);
 			
-		e1 = Inst.creation2(op,y,x); // - On fait l'opération prévue entre les deux empressions
-		e2 = Inst.creation1(Operation.PUSH,x); // - Et on push le résultat en pile
+		e1 = Inst.creation2(op,y,x); 
+		// - On effectue l'opération prévue
+		e2 = Inst.creation1(Operation.PUSH,x);
+		// - Et on push le résultat en pile
 			
 		Prog.ajouter(e1);
 		Prog.ajouter(e2);
 	}
 	
-	private void coder_OP_FEUILLE(Arbre a) // - Transcrit les feuilles en code pour la machine abstraite
+	private void coder_OP_FEUILLE(Arbre a)
+	// - Transcrit les feuilles en code pour la machine abstraite
 	{
 		Inst e1,e2;
 		Operande x,y;
 		
 		switch(a.getNoeud()) // - 3 types de feuilles
 		{
-			case Ident: // - Feuille de type IDENTIFICATEUR
+			case Ident: // - Un identificateur 
 			int n = coder_PLACE(a);
 			x = Operande.creationOpIndirect(n,Registre.GB);
 			break;
@@ -426,7 +474,8 @@ class Generation
 		Prog.ajouter(e2);
 	}
 	
-	private void coder_OP_BRANCH(Arbre a, Operation op) // Opération BRANCH
+	// Opération BRANCH
+	private void coder_OP_BRANCH(Arbre a, Operation op)
 	{
 		Inst e1,e2,e3;
 		Operande x,y;

@@ -2,7 +2,7 @@
 Groupe N : T. Bellanger, R. Jarry, F. Sauger, J. Thomas
 -------------------------------------------------------
 
-## 0. Structure du projet
+## Structure du projet
 
 Le projet se décompose en deux programmes : un compilateur, dont le code a été partiellement fourni, et un générateur de programmes jcas.
 
@@ -14,7 +14,7 @@ Dans la passe 2, nous nous intéressons à la décoration de l'arbre abstrait g�
 
 Dans la passe 3, l'objectif est de transcrire un programme .jcas en instructions compréhensibles pour la machine abstraite. Cette transcription se fait via le fichier ``Generation.java``. Elle est divisée en deux parties: on s'occupe tout d'abord de la déclaration des variables, puis des instructions.
 
-## 0.1. Fonctionnement des programmes
+### Fonctionnement des programmes
 
 Pour créer de nouveaux fichiers de test (si besoin) :
 
@@ -45,22 +45,41 @@ cd ProjetCompil/test/syntaxe/
 
 ./syntaxe.sh
 ```
+
+Pour effectuer la vérification sémantique du programme :
+
+```Bash
+cd ProjetCompil/test/verif/
+
+./verif.sh
+```
+
+Enfin, pour générer du code machine exécutable :
+
+```Bash
+cd ProjetCompil/test/gencode/
+
+./gencode.sh
+```
+
+
 ## 1. Documentation Passe 1
-### Lexicale : Les  Opérateurs 
+
+### Analyse lexicale : Les Opérateurs 
 - Pour chaque opérateur défini dans le langage Jcas par la chaîne correspondante,
 on renvoie le lexeme correspondant, qui existe déjà dans la table des symboles.
 
-#### Exemple de code :
+**Exemple de code** :
 ```Java
 "<=" {return symbol(sym.INF_EGAL);}
 ```
 
-### Lexicale: Lexèmes Spécifiques
+### Analyse Lexicale: Lexèmes Spécifiques
 
 - Pour les lexèmes IDF, constante entiere, constante reelle, constante chaine
 et commentaire, on doit effectuer une action plus spécifique.
 
-#### Exemple de code :
+**Exemple de code** :
 ```Java
 {IDF}
 {
@@ -94,7 +113,7 @@ d'un entier on renvoie sa valeur, sinon on remonte une erreur lexicale.
 - Le dernier cas correspond au cas ou le lexème n'a pas été reconnu, dans ce
 cas on renvoie une erreur lexicale.
 
-#### Exemple de code :
+**Exemple de code** :
 ```Java
 .{
 	System.out.println("Erreur Lexicale : '" +
@@ -103,15 +122,17 @@ cas on renvoie une erreur lexicale.
 	throw new ErreurLexicale();
 }
 ```
-### Syntaxe : Règles de construction de l'arbre d'analyse
+### Analyse Syntaxique : Règles de construction de l'arbre d'analyse
 - On définit chaque non terminal de la grammaire ainsi que les règles de dérivation. A partir de ces règles de dérivation on construit l'arbre d'analyse.
 
-#### Exemple de code :
 #### Définition du non terminal
+
 ```Java
 liste_idf ::= liste_idf:a VIRGULE idf:b {:...:} |  idf:b {:...:}
 ```
+
 #### Création du noeud dans l'arbre
+
 ```Java
 liste_idf:a VIRGULE idf:b
    {:
@@ -139,6 +160,7 @@ La vérification de l'affectation est simple
 - On ne peut affecter aux variables de type _integer_ que des _integer_
 - On peut affecter aux variables de type _real_ des _integer_ ou des _real_
 - On peut affecter à un _array_ un autre _array_ qu'un _array_ de même dimension et sur le même type. Cela se fait par appel récursif sur les premiers éléments des deux _array_
+
 ####  Second cas : Opération binaire
 Le cas de l'opération binaire est assez similaire au cas de l'affectation
 - Les _boolean_ ne supportent que les opérations logiques avec un autre _boolean_
